@@ -689,7 +689,88 @@
         function deleteCase(id, e) { e.stopPropagation(); if(confirm("Delete Case?")) { let repo = JSON.parse(localStorage.getItem(REPO_KEY) || '[]'); localStorage.setItem(REPO_KEY, JSON.stringify(repo.filter(i => i.id !== id))); renderRepo(); } }
         function exportRepo() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([localStorage.getItem(REPO_KEY)], {type:'application/json'})); a.download='LSH_Backup.json'; a.click(); }
         function importRepo(i) { const r = new FileReader(); r.onload = (e) => { localStorage.setItem(REPO_KEY, e.target.result); renderRepo(); alert("Data Imported"); }; r.readAsText(i.files[0]); }
-        function downloadPDF() { window.scrollTo(0,0); const area = document.getElementById('capture-area'); html2pdf().set({ margin: 0.3, filename: 'LSH_Summary.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } }).from(area).save(); }
+        function downloadPDF() {
+    // 1. Create a "Virtual Page" (This never appears on your screen)
+    const virtualPage = document.createElement('div');
+    Object.assign(virtualPage.style, {
+        padding: '50px',
+        backgroundColor: '#ffffff',
+        color: '#000000',
+        fontFamily: 'Arial, sans-serif',
+        lineHeight: '1.5'
+    });
+
+    // 2. Identify the Case Basics
+    const clientName = document.getElementById('client-name-field').innerText.trim() || "UNNAMED CLIENT";
+    const phase = document.getElementById('display-phase').innerText;
+
+    // 3. Construct the Header for the PDF
+    virtualPage.innerHTML = `
+        <div style="border-bottom: 5px solid #000; margin-bottom: 30px; padding-bottom: 10px;">
+            <h1 style="margin:0; font-size: 28px; text-transform: uppercase;">${clientName}</h1>
+            <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 10px; font-weight: bold; text-transform: uppercase;">
+                <span style="color: #f97316;">PHASE: ${phase}</span>
+                <span style="color: #64748b;">DATE: ${new Date().toLocaleDateString()}</span>
+            </div>
+        </div>
+    `;
+
+    // 4. Scrape Data from PDF Cards
+    const cards = document.querySelectorAll('.pdf-card');
+    
+    cards.forEach(card => {
+        // Find the specific Header for the section
+        const header = card.querySelector('h3, label[style*="background-color: black"], label[style*="background-color: rgb(0, 0, 0)"]');
+        if (!header) return;
+
+        let sectionContent = "";
+        const inputs = card.querySelectorAll('[contenteditable="true"], select');
+
+        inputs.forEach(input => {
+            const val = input.tagName === 'SELECT' ? input.value : input.innerText.trim();
+            
+            // List of placeholders to ignore
+            const placeholders = ["MM/DD/YYYY", "(000) 000-0000", "$ 0.00", "Enter facts of loss...", "...", "Summary...", "Select Staff", ""];
+            
+            if (val && !placeholders.includes(val)) {
+                let labelText = "Detail";
+                if (input.previousElementSibling?.tagName === "LABEL") {
+                    labelText = input.previousElementSibling.innerText;
+                } else if (input.closest('div')?.querySelector('label')) {
+                    labelText = input.closest('div').querySelector('label').innerText;
+                }
+
+                sectionContent += `
+                    <div style="margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px;">
+                        <div style="font-size: 8px; font-weight: 900; color: #94a3b8; text-transform: uppercase;">${labelText}</div>
+                        <div style="font-size: 11px; font-weight: bold; color: #000;">${val}</div>
+                    </div>
+                `;
+            }
+        });
+
+        if (sectionContent) {
+            virtualPage.innerHTML += `
+                <div style="margin-bottom: 30px; break-inside: avoid;">
+                    <h2 style="background-color: #000; color: #fff; font-size: 12px; padding: 6px 12px; text-transform: uppercase; margin-bottom: 15px;">${header.innerText}</h2>
+                    <div>${sectionContent}</div>
+                </div>
+            `;
+        }
+    });
+
+    const exportOptions = {
+        margin: [0.5, 0.5],
+        filename: `LSH_SUMMARY_${clientName.replace(/\s+/g, '_')}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(exportOptions).from(virtualPage).save().then(() => {
+        virtualPage.remove();
+    });
+}
         window.onload = renderRepo;
     </script>
     <script>
