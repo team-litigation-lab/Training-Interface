@@ -1,248 +1,397 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LSH Master Build | Definitive Master 2026</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f8fafc; 
-            color: #0f172a; 
-            height: 100vh; 
-            display: flex; 
-            overflow: hidden; 
-            margin: 0; 
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LSH Case Management System | Restricted Access</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+    :root{
+        --navy:#0f2148;
+        --navy-deep:#081226;
+        --navy-mid:#132a5c;
+        --orange:#f97316;
+        --slate:#64748b;
+        --paper:#f8fafc;
+        --classified-red:#b91c1c;
+        --success:#166534;
+    }
 
-        /* 1. IDENTITY SYSTEM - PROFESSIONAL LOCK */
-        #client-name-field { 
-            font-size: 36px !important; 
-            font-weight: 900 !important; 
-            color: #000000 !important; 
-            text-transform: uppercase !important; 
-            line-height: 1 !important; 
-            outline: none !important; 
-            border: none !important; 
-            background: transparent !important; 
-            padding: 0 !important; 
-            min-width: 450px; 
-        }
+    * { box-sizing: border-box; }
 
-        .target-settlement-display { 
-            font-size: 24px !important; 
-            font-weight: 900 !important; 
-            color: #166534 !important; 
-            letter-spacing: -1px; 
-            background: #f0fdf4; 
-            padding: 4px 12px; 
-            border-radius: 8px; 
-            border: 1px solid #dcfce7; 
-        }
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: var(--paper);
+        color: var(--navy);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        margin: 0;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
 
-        .sol-font-fix { 
-            color: #000000 !important; 
-            font-weight: 900 !important; 
-        }
+    .serif { font-family: Arial, Helvetica, sans-serif; }
+    .mono { font-family: Arial, Helvetica, sans-serif; }
 
-        /* 2. PDF FIX: STABLE INTEGRATED BAR */
-        #lsh-integrated-bar { 
-            background: #0f172a !important; 
-            color: white !important; 
-            padding: 14px 20px !important; 
-            border-radius: 10px !important; 
-            margin: 20px 0 !important; 
-            display: flex !important; 
-            flex-direction: row !important;
-            align-items: center !important; 
-            border-left: 6px solid #f97316 !important; 
-            gap: 20px !important;
-            min-height: 80px !important;
-        }
+    /* ===== CLASSIFICATION BANNER ===== */
+    #classification-bar {
+        height: 34px;
+        flex-shrink: 0;
+        background: repeating-linear-gradient(135deg, var(--navy-deep) 0px, var(--navy-deep) 14px, #0f2148 14px, #0f2148 28px);
+        border-bottom: 2px solid var(--classified-red);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 18px;
+        color: #f8fafc;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        z-index: 200;
+    }
+    #classification-bar .cls-label {
+        background: var(--classified-red);
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 3px;
+        font-weight: 900;
+        letter-spacing: 1.5px;
+    }
+    #classification-bar .clock-widget {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    #classification-bar select {
+        background: #0f172a;
+        color: #f97316;
+        border: 1px solid #334155;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 6px;
+        outline: none;
+    }
 
-        .bar-data-container {
-            display: flex !important;
-            gap: 15px !important;
-            flex-shrink: 0 !important;
-        }
+    #app-shell { flex: 1; display: flex; overflow: hidden; }
 
-        .bar-box { 
-            background: white !important; 
-            border-radius: 8px !important; 
-            padding: 10px 15px !important; 
-            display: flex !important; 
-            flex-direction: column !important;
-            justify-content: center !important;
-            width: 180px !important; 
-            height: 55px !important;
-            flex-shrink: 0 !important;
-        }
+    /* watermark */
+    #capture-area {
+        position: relative;
+        background-image: repeating-linear-gradient(45deg, rgba(15,23,42,0.025) 0px, rgba(15,23,42,0.025) 2px, transparent 2px, transparent 140px);
+    }
+    #capture-area::before {
+        content: "CONFIDENTIAL — LSH INTERNAL RECORD";
+        position: fixed;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%,-50%) rotate(-28deg);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 46px;
+        font-weight: 800;
+        color: rgba(15,23,42,0.035);
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 0;
+    }
 
-        .bar-box label { 
-            margin-bottom: 2px !important; 
-            color: #64748b !important; 
-            font-size: 9px !important; 
-            font-weight: 900 !important;
-            line-height: 1 !important;
-        }
+    /* 1. IDENTITY SYSTEM */
+    #client-name-field {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 32px !important;
+        font-weight: 900 !important;
+        color: #000000 !important;
+        text-transform: uppercase !important;
+        line-height: 1.1 !important;
+        outline: none !important;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        min-width: 420px;
+    }
 
-        .bar-box div { 
-            color: #0f172a !important; 
-            font-weight: 800 !important; 
-            font-size: 14px !important; 
-        }
+    .target-settlement-display {
+        font-size: 20px !important;
+        font-weight: 900 !important;
+        color: #166534 !important;
+        letter-spacing: -0.5px;
+        background: #f0fdf4;
+        padding: 4px 12px;
+        border-radius: 6px;
+        border: 1px solid #dcfce7;
+    }
 
-        .sol-box { 
-            background: #fee2e2 !important; 
-            border: 1px solid #fecaca !important; 
-        }
+    .sol-font-fix { color: #000000 !important; font-weight: 900 !important; }
 
-        /* 3. NAVIGATION & TABS */
-        .tab-btn { 
-            cursor: pointer; 
-            color: #94a3b8; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            font-size: 10px; 
-            padding: 10px 0; 
-            transition: all 0.3s; 
-            border-bottom: 3px solid transparent; 
-            white-space: nowrap; 
-        }
+    /* placeholders — single, non-flickering, CSS-driven */
+    [contenteditable="true"]:empty:before {
+        content: attr(data-ph);
+        color: #94a3b8;
+        font-style: italic;
+        font-weight: 400;
+    }
 
-        .active-tab { 
-            border-bottom: 3px solid #f97316 !important; 
-            color: #f97316 !important; 
-        }
+    /* 2. INTEGRATED CASE BAR */
+    #lsh-integrated-bar {
+        background: var(--navy) !important;
+        color: white !important;
+        padding: 14px 20px !important;
+        border-radius: 8px !important;
+        margin: 18px 0 !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        border-left: 6px solid var(--orange) !important;
+        gap: 20px !important;
+        min-height: 78px !important;
+    }
+    .bar-data-container { display: flex !important; gap: 14px !important; flex-shrink: 0 !important; }
+    .bar-box {
+        background: white !important;
+        border-radius: 6px !important;
+        padding: 8px 14px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        width: 170px !important;
+        height: 52px !important;
+        flex-shrink: 0 !important;
+    }
+    .bar-box label { margin-bottom: 2px !important; color: #64748b !important; font-size: 9px !important; font-weight: 900 !important; line-height: 1 !important; }
+    .bar-box div { color: #0f172a !important; font-weight: 800 !important; font-size: 13px !important; font-family: Arial, Helvetica, sans-serif; }
+    .sol-box { background: #fee2e2 !important; border: 1px solid #fecaca !important; width: 200px !important; }
+    .sol-box label { font-size: 8px !important; letter-spacing: 0.02em; }
 
-        .tab-pane { 
-            display: none; 
-            height: 100%; 
-            overflow-y: auto; 
-            padding-bottom: 250px; 
-        }
+    /* 3. NAVIGATION */
+    .tab-btn {
+        cursor: pointer;
+        color: #94a3b8;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 10.5px;
+        letter-spacing: 0.04em;
+        padding: 9px 4px;
+        transition: color .15s, border-color .15s;
+        border-bottom: 3px solid transparent;
+        white-space: nowrap;
+    }
+    .active-tab { border-bottom: 3px solid var(--orange) !important; color: var(--orange) !important; }
+    .tab-pane { display: none; height: 100%; overflow-y: auto; padding-bottom: 220px; position: relative; z-index: 1; }
+    .tab-pane.active { display: block; }
 
-        .tab-pane.active { 
-            display: block; 
-        }
+    /* 4. COMPONENTS */
+    .pdf-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 22px;
+        margin-bottom: 18px;
+        position: relative;
+    }
+    .section-head {
+        background: var(--navy);
+        color: var(--orange);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 7px 12px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        min-height: 30px;
+    }
 
-        /* 4. UI COMPONENTS */
-        .pdf-card { 
-            background: white; 
-            border: 1px solid #e2e8f0; 
-            border-radius: 12px; 
-            padding: 24px; 
-            margin-bottom: 20px; 
-            position: relative; 
-        }
+    [contenteditable="true"] {
+        outline: none;
+        background: #f8fafc;
+        border-radius: 4px;
+        padding: 8px 12px;
+        border: 1px solid #eef2f7;
+        min-height: 38px;
+        width: 100%;
+    }
+    [contenteditable="true"]:focus { background: #ffffff; border-color: var(--orange); box-shadow: 0 0 0 2px rgba(249,115,22,0.12); }
 
-        [contenteditable="true"] { 
-            outline: none; 
-            background: #f8fafc; 
-            border-radius: 4px; 
-            padding: 8px 12px; 
-            border: 1px solid #f1f5f9; 
-            min-height: 38px; 
-            width: 100%; 
-        }
+    label { font-size: 10px !important; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; display: block; letter-spacing: 0.05em; }
 
-        [contenteditable="true"]:focus { 
-            background: #ffffff; 
-            border-color: #f97316; 
-        }
+    select.prof-input { background: #f8fafc; border: 1px solid #eef2f7; border-radius: 4px; padding: 8px 10px; font-size: 13px; font-weight: 700; outline: none; width: 100%; color: #0f172a; cursor: pointer; }
 
-        label { 
-            font-size: 10px !important; 
-            font-weight: 900; 
-            color: #94a3b8; 
-            text-transform: uppercase; 
-            margin-bottom: 6px; 
-            display: block; 
-            letter-spacing: 0.05em; 
-        }
-        
-        select.prof-input { 
-            background: #f8fafc; 
-            border: 1px solid #f1f5f9; 
-            border-radius: 4px; 
-            padding: 8px 10px; 
-            font-size: 13px; 
-            font-weight: 700; 
-            outline: none; 
-            width: 100%; 
-            color: #0f172a; 
-            cursor: pointer; 
-        }
+    .treat-table { width: 100%; border-collapse: collapse; }
+    .treat-table th { background: #f8fafc; text-align: left; font-size: 10px; text-transform: uppercase; color: #64748b; padding: 12px; border-bottom: 2px solid #e2e8f0; letter-spacing:0.04em; }
+    .treat-table td { padding: 10px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
 
-        .treat-table { width: 100%; border-collapse: collapse; }
-        .treat-table th { background: #f8fafc; text-align: left; font-size: 10px; text-transform: uppercase; color: #64748b; padding: 12px; border-bottom: 2px solid #e2e8f0; }
-        .treat-table td { padding: 10px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    .hub-btn { background: #fffaf0; border: 1px solid #ffedd5; color: #9a3412; font-size: 9px; font-weight: 900; text-transform: uppercase; padding: 14px; border-radius: 8px; text-align: center; cursor: pointer; }
+    .hub-btn:hover { background: var(--orange); color: white; border-color: var(--orange); }
 
-        .hub-btn { 
-            background: #fffaf0; 
-            border: 1px solid #ffedd5; 
-            color: #9a3412; 
-            font-size: 9px; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            padding: 14px; 
-            border-radius: 8px; 
-            text-align: center; 
-            cursor: pointer; 
-        }
-        .hub-btn:hover { background: #f97316; color: white; border-color: #f97316; }
+    .add-btn {
+        background: var(--orange) !important;
+        color: #000 !important;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 900 !important;
+        font-size: 10px !important;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 7px 16px !important;
+        border-radius: 5px !important;
+        border: none !important;
+        cursor: pointer;
+    }
+    .add-btn:hover { background: #0f172a !important; color: var(--orange) !important; }
 
-        .revert-btn { 
-            background: #f97316; 
-            color: white; 
-            font-size: 12px; 
-            padding: 4px 8px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            margin-left: 5px; 
-            display: none; 
-            font-weight: 900; 
-        }
+    .revert-btn { background: var(--orange); color: white; font-size: 12px; padding: 4px 8px; border-radius: 6px; cursor: pointer; margin-left: 5px; display: none; font-weight: 900; }
 
-        .repo-card { 
-            background: #0f172a !important; 
-            border: 1px solid #1e293b !important; 
-            padding: 12px !important; 
-            border-radius: 10px !important; 
-            margin-bottom: 10px !important; 
-            cursor: pointer !important; 
-            position: relative !important; 
-            color: white; 
-        }
+    .repo-card { background: var(--navy) !important; border: 1px solid #1e293b !important; padding: 12px !important; border-radius: 8px !important; margin-bottom: 10px !important; cursor: pointer !important; position: relative !important; color: white; }
+    .repo-card:hover { border-color: var(--orange) !important; }
 
-        @media print { 
-            .no-print { display: none !important; }
-            .pdf-card { border: 2px solid #f97316 !important; break-inside: avoid; }
-            #lsh-integrated-bar { -webkit-print-color-adjust: exact; background-color: #0f172a !important; }
-        }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-    </style>
+    /* ===== SIDEBAR ===== */
+    #sidebar {
+        width: 280px;
+        background: var(--navy-deep);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        border-right: 1px solid #0d1c3d;
+        position: relative;
+    }
+    #sidebar-header {
+        padding: 26px 26px 20px;
+        border-bottom: 1px solid #0d1c3d;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+    #agency-seal {
+        width: 42px; height: 42px; aspect-ratio: 1 / 1; border-radius: 6px;
+        border: 2px solid var(--orange);
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0; overflow: hidden; background:#0f172a;
+    }
+    #agency-seal img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 1 / 1; }
+
+    #admin-login-btn {
+        margin: 16px 16px 20px;
+        background: transparent;
+        border: 1px solid #334155;
+        color: #64748b;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    #admin-login-btn:hover { border-color: var(--orange); color: var(--orange); }
+    #admin-login-btn.active-admin { border-color: var(--success); color: #4ade80; background: rgba(22,101,52,0.15); }
+
+    /* ===== MODALS ===== */
+    .modal-overlay {
+        position: fixed; inset: 0; background: rgba(5,7,10,0.82);
+        display: none; align-items: center; justify-content: center;
+        z-index: 900; backdrop-filter: blur(2px);
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+        background: white; border-radius: 10px; width: 380px; max-width: 90vw;
+        padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        border-top: 6px solid var(--orange);
+    }
+    .modal-box.wide { width: 560px; }
+    .modal-box h2 { font-family:Arial, Helvetica, sans-serif; font-size:19px; font-weight:800; margin:0 0 4px; }
+    .modal-box .sub { font-size:11px; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:18px; }
+    .modal-box input[type=text], .modal-box input[type=password] {
+        width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:6px;
+        font-family:Arial, Helvetica, sans-serif; font-size:13px; margin-bottom:12px; outline:none;
+    }
+    .modal-box input:focus { border-color: var(--orange); }
+    .modal-btn-row { display:flex; gap:8px; margin-top:16px; }
+    .modal-btn-row button {
+        flex:1; padding:10px; border-radius:6px; font-weight:800; font-size:11px;
+        text-transform:uppercase; letter-spacing:0.04em; cursor:pointer; border:none;
+    }
+    .btn-primary { background: var(--navy); color: var(--orange); }
+    .btn-primary:hover { background: var(--navy-deep); }
+    .btn-ghost { background: #f1f5f9; color:#64748b; }
+    .btn-ghost:hover { background:#e2e8f0; }
+    #admin-error { color:var(--classified-red); font-size:11px; font-weight:700; margin-bottom:8px; display:none; }
+
+    .admin-panel-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px; }
+    .admin-tile { background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:16px; }
+    .admin-tile h4 { font-size:10px; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; font-weight:800; margin:0 0 10px; }
+    .admin-stat { font-family:Arial, Helvetica, sans-serif; font-size:22px; font-weight:800; color:var(--navy); }
+    .admin-stat-label { font-size:10px; color:#64748b; font-weight:700; text-transform:uppercase; }
+
+    #lock-overlay {
+        position: fixed; inset:0; background: var(--navy-deep);
+        z-index: 1000; display:none; align-items:center; justify-content:center; flex-direction:column;
+        color:white; text-align:center;
+    }
+    #lock-overlay.open { display:flex; }
+
+    @media print {
+        .no-print { display: none !important; }
+        .pdf-card { border: 2px solid var(--orange) !important; break-inside: avoid; }
+        #lsh-integrated-bar { -webkit-print-color-adjust: exact; background-color: var(--navy) !important; }
+        #capture-area::before { display:none; }
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+</style>
 </head>
 <body>
 
-    <aside class="w-72 bg-[#05070a] text-white flex flex-col no-print shrink-0 border-r border-slate-900">
-        <div class="p-8 border-b border-slate-900">
-            <h1 class="text-lg font-black text-white leading-tight uppercase tracking-tight">Legal Support Help<br><span class="text-orange-500">Training Interface</span></h1>
+    <!-- CLASSIFICATION / TIME BAR -->
+    <div id="classification-bar" class="no-print">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <span class="cls-label">LSH</span>
+            <span>TRAINING INTERFACE</span>
         </div>
-        <div class="p-6 flex-1 overflow-y-auto custom-scrollbar" id="sidebar-actions">
-            <button onclick="downloadPDF()" class="w-full bg-[#f97316] hover:bg-orange-700 text-white py-3 rounded-lg font-bold text-xs uppercase shadow-lg mb-4">Download PDF</button>
-            <button onclick="if(confirm('Reset current work?')) window.location.reload()" class="w-full border border-slate-700 text-slate-400 py-2 rounded-lg text-[10px] font-bold uppercase hover:bg-slate-900 mb-8">Reset Screen</button>
-            
-            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Case Repository</p>
+        <div class="clock-widget">
+            <span id="live-clock">--:--:--</span>
+            <select id="tz-select" onchange="refreshClock()">
+                <option value="Asia/Manila">Manila (PHT)</option>
+                <option value="UTC">UTC</option>
+                <option value="America/New_York">New York (ET)</option>
+                <option value="America/Chicago">Chicago (CT)</option>
+                <option value="America/Denver">Denver (MT)</option>
+                <option value="America/Los_Angeles">Los Angeles (PT)</option>
+                <option value="Europe/London">London (GMT/BST)</option>
+                <option value="Asia/Tokyo">Tokyo (JST)</option>
+                <option value="Australia/Sydney">Sydney (AEST)</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="app-shell">
+    <aside id="sidebar" class="no-print custom-scrollbar">
+        <div id="sidebar-header">
+            <div id="agency-seal"><span style="font-size:18px;">⚖</span></div>
+            <h1 class="text-base font-black text-white leading-tight uppercase tracking-tight serif">Legal Support Help<br><span class="text-orange-500 text-[11px] mono">Case Management System</span></h1>
+        </div>
+        <div class="p-6 flex-1 overflow-y-auto custom-scrollbar" id="sidebar-actions" style="flex:1;">
+            <button onclick="downloadPDF()" class="w-full bg-[#f97316] hover:bg-orange-700 text-white py-3 rounded-lg font-bold text-xs uppercase shadow-lg mb-4">Download Case Summary (PDF)</button>
+            <button onclick="if(confirm('Reset current work? Unsaved entries will be lost.')) window.location.reload()" class="w-full border border-slate-700 text-slate-400 py-2 rounded-lg text-[10px] font-bold uppercase hover:bg-slate-900 mb-8">Reset Screen</button>
+
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 mono">Case Repository</p>
             <div id="repo-list" class="space-y-3 mb-6"></div>
-            
-            <button onclick="saveCase()" class="w-full bg-[#10b981] hover:bg-emerald-700 text-white py-3 rounded-lg font-black text-[11px] uppercase shadow-lg mb-4">💾 Archive Case</button>
-            
+
+            <button onclick="saveCase()" class="w-full bg-[#10b981] hover:bg-emerald-700 text-white py-3 rounded-lg font-black text-[11px] uppercase shadow-lg mb-4">Archive Case</button>
+
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="exportRepo()" class="bg-[#2563eb] hover:bg-blue-700 text-white text-[10px] font-black py-2.5 rounded uppercase">Export</button>
                 <label class="bg-[#374151] hover:bg-slate-600 text-white text-[10px] font-black py-2.5 rounded uppercase text-center cursor-pointer">
@@ -250,31 +399,28 @@
                 </label>
             </div>
         </div>
+        <button id="admin-login-btn" onclick="openAdminModal()">🔒 Admin Login</button>
     </aside>
 
     <main class="flex-1 flex flex-col overflow-hidden">
-        <header class="h-10 bg-white border-b flex items-center justify-end px-8 no-print shrink-0">
-            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Welcome to LSH</span>
-        </header>
-
         <div class="flex-1 overflow-y-auto p-8 custom-scrollbar" id="capture-area">
-            
+
             <div class="pdf-card header-card shadow-lg border-2 border-orange-500">
                 <div class="flex justify-between items-start">
                     <div class="space-y-1">
-                        <div id="client-name-field" contenteditable="true">CLIENT'S NAME</div>
+                        <div id="client-name-field" contenteditable="true" data-ph="CLIENT NAME"></div>
                         <div class="flex items-center gap-6">
-                            <div class="flex items-center gap-2"><label class="mb-0">Contact:</label><div contenteditable="true" style="min-width:140px" class="text-xs font-bold text-slate-700">(000) 000-0000</div></div>
-                            <div class="flex items-center gap-2"><label class="mb-0 text-green-600">Target Settlement:</label><div contenteditable="true" style="min-width:120px" class="target-settlement-display">$ 0.00</div></div>
+                            <div class="flex items-center gap-2"><label class="mb-0">Contact:</label><div contenteditable="true" data-ph="(000) 000-0000" style="min-width:140px" class="text-xs font-bold text-slate-700"></div></div>
+                            <div class="flex items-center gap-2"><label class="mb-0 text-green-600">Target Settlement:</label><div contenteditable="true" data-ph="$ 0.00" style="min-width:120px" class="target-settlement-display"></div></div>
                         </div>
                     </div>
                     <div class="text-right">
-                        <div class="flex items-center gap-3 mb-2 justify-end"><label class="mb-0">Case ID:</label><div contenteditable="true" class="text-xs font-bold text-slate-500 min-w-[120px] bg-slate-100 px-2 py-0.5 rounded">BATCH-2026-X</div></div>
+                        <div class="flex items-center gap-3 mb-2 justify-end"><label class="mb-0">Case ID:</label><div id="case-id-field" contenteditable="false" class="text-xs font-bold text-slate-500 min-w-[160px] bg-slate-100 px-2 py-0.5 rounded mono">LSH-----</div></div>
                         <div class="flex items-center gap-2">
                             <select id="phase-selector" onchange="updatePhaseDisplay(this.value)" class="bg-orange-50 text-orange-700 text-[10px] font-black uppercase px-2 py-1 rounded border border-orange-100 cursor-pointer">
                                 <option value="Intake">Intake</option><option value="Investigation">Investigation</option><option value="Treatment">Treatment</option><option value="Demand Review">Demand Review</option><option value="Bi Demand">Bi Demand</option><option value="BI Settlement Nego">BI Settlement Nego</option><option value="UM Demand">UM Demand</option><option value="UM settlement">UM settlement</option><option value="Lien Negotiations">Lien Negotiations</option><option value="Disbursement">Disbursement</option><option value="Litigation">Litigation</option>
                             </select>
-                            <div id="display-phase" class="text-orange-600 font-black text-3xl uppercase italic leading-none min-w-[280px]">INTAKE</div>
+                            <div id="display-phase" class="text-orange-600 font-black text-3xl uppercase italic leading-none min-w-[280px] serif">INTAKE</div>
                         </div>
                     </div>
                 </div>
@@ -283,24 +429,24 @@
                     <div class="bar-data-container">
                         <div class="bar-box">
                             <label>DATE OF LOSS</label>
-                            <div contenteditable="true">MM/DD/YYYY</div>
+                            <div contenteditable="true" data-ph="MM/DD/YYYY"></div>
                         </div>
                         <div class="bar-box sol-box">
-                            <label class="text-red-600">STATUTE (SOL)</label>
-                            <div contenteditable="true" class="sol-font-fix">MM/DD/YYYY</div>
+                            <label class="text-red-600">STATUTE OF LIMITATIONS (SOL)</label>
+                            <div contenteditable="true" class="sol-font-fix" data-ph="MM/DD/YYYY"></div>
                         </div>
                     </div>
-                    
+
                     <div class="ml-auto flex items-center">
                         <span class="text-[10px] font-black text-orange-500 italic uppercase mr-3">Type:</span>
                         <div class="flex items-center bg-[#1f2937] rounded-lg border border-slate-700 p-1">
-                            <select id="main-case-type" onchange="handleOtherSystem(this.id, 'main-case-other', 'main-revert')" class="bg-transparent text-blue-400 font-black text-[11px] px-4 outline-none cursor-pointer uppercase">
+                            <select id="main-case-type" onchange="handleOtherSystem(this.id, 'main-case-other', 'main-revert'); generateCaseId(false);" class="bg-transparent text-blue-400 font-black text-[11px] px-4 outline-none cursor-pointer uppercase">
                                 <option value="MVA">MVA</option>
                                 <option value="Slip and Fall">Slip and Fall</option>
                                 <option value="Dog Bite">Dog Bite</option>
                                 <option value="Others">Others</option>
                             </select>
-                            <div id="main-case-other" contenteditable="true" class="hidden text-white text-[11px] px-2 min-w-[120px] outline-none">TYPE OTHER...</div>
+                            <div id="main-case-other" contenteditable="true" data-ph="TYPE OTHER..." oninput="generateCaseId(false);" class="hidden text-white text-[11px] px-2 min-w-[120px] outline-none"></div>
                             <button id="main-revert" onclick="revertOther('main-case-type', 'main-case-other', 'main-revert')" class="revert-btn">↺</button>
                         </div>
                     </div>
@@ -312,7 +458,7 @@
                     <div onclick="showTab('matrix')" id="tab-matrix" class="tab-btn">Insurance</div>
                     <div onclick="showTab('liens')" id="tab-liens" class="tab-btn">Liens</div>
                     <div onclick="showTab('medical')" id="tab-medical" class="tab-btn">Treatment</div>
-                    <div onclick="showTab('pd')" id="tab-pd" class="tab-btn">Prop Damage</div>
+                    <div onclick="showTab('pd')" id="tab-pd" class="tab-btn">Property Damage</div>
                     <div onclick="showTab('litigation')" id="tab-litigation" class="tab-btn">Litigation</div>
                     <div onclick="showTab('finance')" id="tab-finance" class="tab-btn">Finance</div>
                     <div onclick="showTab('docs')" id="tab-docs" class="tab-btn">Doc Hub</div>
@@ -324,40 +470,40 @@
             <div id="pane-profile" class="tab-pane active">
                 <div class="grid grid-cols-3 gap-8">
                     <div class="space-y-6">
-                        <div class="pdf-card shadow-sm"><h3 class="text-[11px] font-black text-slate-400 uppercase mb-4 border-b pb-2">Identity</h3>
-                            <div class="grid grid-cols-2 gap-4 mb-4"><div><label>DOB</label><div contenteditable="true"></div></div><div><label>SSN</label><div contenteditable="true"></div></div></div>
-                            <div class="mb-4"><label>Email Address</label><div contenteditable="true"></div></div><div><label>Home Address</label><div contenteditable="true"></div></div>
+                        <div class="pdf-card shadow-sm"><div class="section-head">Identity</div>
+                            <div class="grid grid-cols-2 gap-4 mb-4"><div><label>DOB</label><div contenteditable="true" data-ph="MM/DD/YYYY"></div></div><div><label>SSN</label><div contenteditable="true" data-ph="XXX-XX-XXXX"></div></div></div>
+                            <div class="mb-4"><label>Email Address</label><div contenteditable="true" data-ph="name@example.com"></div></div><div><label>Home Address</label><div contenteditable="true" data-ph="Street, City, State, ZIP"></div></div>
                         </div>
-                        <div class="pdf-card border-l-4 border-orange-400 shadow-sm"><h3 class="text-[11px] font-black text-orange-400 uppercase mb-4 border-b pb-2">Emergency Contact</h3>
-                            <div class="mb-4"><label>Full Name</label><div contenteditable="true"></div></div>
-                            <div class="grid grid-cols-2 gap-4"><div><label>Phone</label><div contenteditable="true"></div></div><div><label>Relationship</label><div contenteditable="true"></div></div></div>
+                        <div class="pdf-card border-l-4 border-orange-400 shadow-sm"><div class="section-head" style="background:#fff7ed;color:#c2410c;">Emergency Contact</div>
+                            <div class="mb-4"><label>Full Name</label><div contenteditable="true" data-ph="Enter full name"></div></div>
+                            <div class="grid grid-cols-2 gap-4"><div><label>Phone</label><div contenteditable="true" data-ph="(000) 000-0000"></div></div><div><label>Relationship</label><div contenteditable="true" data-ph="e.g. Spouse"></div></div></div>
                         </div>
                     </div>
                     <div class="space-y-6">
-                        <div class="pdf-card shadow-sm"><h3>Employment Details</h3>
+                        <div class="pdf-card shadow-sm"><div class="section-head">Employment Details</div>
                             <div class="mb-4"><label>Status</label><select class="prof-input"><option>Employed</option><option>Unemployed</option><option>Retired</option></select></div>
-                            <div class="mb-4"><label>Employer Name</label><div contenteditable="true"></div></div>
-                            <div class="mb-4"><label>Job Position / Title</label><div contenteditable="true"></div></div>
+                            <div class="mb-4"><label>Employer Name</label><div contenteditable="true" data-ph="Enter employer"></div></div>
+                            <div class="mb-4"><label>Job Position / Title</label><div contenteditable="true" data-ph="Enter title"></div></div>
                         </div>
                     </div>
-                    <div class="pdf-card shadow-sm"><h3 class="text-orange-500 font-black uppercase text-[11px] mb-4 border-b pb-2">Case Narrative</h3><div contenteditable="true" class="min-h-[440px] text-sm italic leading-relaxed text-slate-600">Enter facts of loss...</div></div>
+                    <div class="pdf-card shadow-sm"><div class="section-head">Case Narrative</div><div contenteditable="true" data-ph="Enter facts of loss..." class="min-h-[420px] text-sm italic leading-relaxed text-slate-600"></div></div>
                 </div>
                 <div class="mt-6">
-                    <div class="flex justify-between items-center mb-4"><label class="text-orange-600 font-black text-sm uppercase">Passenger Records</label><button onclick="addPassenger()" class="bg-slate-900 text-white text-[10px] px-4 py-2 rounded no-print hover:bg-orange-600 transition-all font-bold">+ ADD PASSENGER</button></div>
+                    <div class="flex justify-between items-center mb-4"><label class="text-orange-600 font-black text-sm uppercase mb-0">Passenger Records</label><button onclick="addPassenger()" class="add-btn no-print">+ Add Passenger</button></div>
                     <div id="passenger-container" class="space-y-4"></div>
                 </div>
             </div>
 
             <div id="pane-police" class="tab-pane">
                 <div class="pdf-card border-l-8 border-blue-500">
-                    <h3 class="font-black text-blue-600 text-[11px] mb-6 uppercase tracking-widest">Police Report Details</h3>
+                    <div class="section-head" style="background:#0f172a;color:#60a5fa;">Police Report Details</div>
                     <div class="grid grid-cols-3 gap-8 mb-8">
-                        <div><label>Responding Agency</label><div contenteditable="true"></div></div>
-                        <div><label>Report Number</label><div contenteditable="true"></div></div>
-                        <div><label>Reporting Officer</label><div contenteditable="true"></div></div>
+                        <div><label>Responding Agency</label><div contenteditable="true" data-ph="e.g. State Highway Patrol"></div></div>
+                        <div><label>Report Number</label><div contenteditable="true" data-ph="Enter report #"></div></div>
+                        <div><label>Reporting Officer</label><div contenteditable="true" data-ph="Name & Badge #"></div></div>
                     </div>
                     <label>Officer's Narrative Summary</label>
-                    <div contenteditable="true" class="min-h-[450px] bg-slate-50 p-6 rounded text-sm italic leading-relaxed text-slate-700">Type police summary here...</div>
+                    <div contenteditable="true" data-ph="Type police summary here..." class="min-h-[420px] bg-slate-50 p-6 rounded text-sm italic leading-relaxed text-slate-700"></div>
                 </div>
             </div>
 
@@ -365,82 +511,99 @@
                 <div class="space-y-8">
                     <div class="grid grid-cols-2 gap-8">
                         <div class="pdf-card border-l-4 border-blue-500 shadow-sm">
-                            <h3 class="font-black text-blue-500 uppercase text-[11px] mb-4 italic">Health Insurance</h3>
+                            <div class="section-head" style="background:#eff6ff;color:#1d4ed8;">Health Insurance</div>
                             <div class="grid grid-cols-2 gap-4">
-                                <div><label>Carrier</label><div contenteditable="true"></div></div>
-                                <div><label>Member ID</label><div contenteditable="true"></div></div>
-                                <div class="col-span-2"><label>Group Number</label><div contenteditable="true"></div></div>
+                                <div><label>Carrier</label><div contenteditable="true" data-ph="Enter carrier"></div></div>
+                                <div><label>Member ID</label><div contenteditable="true" data-ph="Enter member ID"></div></div>
+                                <div class="col-span-2"><label>Group Number</label><div contenteditable="true" data-ph="Enter group #"></div></div>
                             </div>
                         </div>
                         <div class="pdf-card border-l-4 border-blue-900 shadow-sm">
-                            <h3 class="font-black text-blue-900 uppercase text-[11px] mb-4 italic">Independent Subrogation Card</h3>
+                            <div class="section-head" style="background:#eef2ff;color:#1e3a8a;">Independent Subrogation Card</div>
                             <div class="grid grid-cols-2 gap-4">
-                                <div><label>Subro Agency</label><div contenteditable="true"></div></div>
-                                <div><label>Lien Holder</label><div contenteditable="true"></div></div>
-                                <div><label>Claim #</label><div contenteditable="true"></div></div>
-                                <div><label>Lien Amount</label><div contenteditable="true" class="font-bold text-red-600">$ 0.00</div></div>
+                                <div><label>Subro Agency</label><div contenteditable="true" data-ph="Enter agency"></div></div>
+                                <div><label>Lien Holder</label><div contenteditable="true" data-ph="Enter lien holder"></div></div>
+                                <div><label>Claim #</label><div contenteditable="true" data-ph="Enter claim #"></div></div>
+                                <div><label>Lien Amount</label><div contenteditable="true" data-ph="$ 0.00" class="font-bold text-red-600"></div></div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="flex justify-between items-center"><label class="font-black text-red-600 text-sm uppercase">Bodily Injury (BI) Policies</label><button onclick="addBI()" class="bg-red-600 text-white text-[10px] px-4 py-2 rounded no-print font-bold">+ ADD BI POLICY</button></div>
+
+                    <div class="flex justify-between items-center"><label class="font-black text-red-600 text-sm uppercase mb-0">Bodily Injury (BI) Policies</label><button onclick="addBI()" class="add-btn no-print">+ Add BI Policy</button></div>
                     <div id="bi-container" class="space-y-4"></div>
-                    
-                    <div class="flex justify-between items-center"><label class="font-black text-orange-600 text-sm uppercase">PIP / UM / UIM Coverage Stack</label><button onclick="addPIPUM()" class="bg-orange-600 text-white text-[10px] px-4 py-2 rounded no-print font-bold">+ ADD COVERAGE</button></div>
+
+                    <div class="flex justify-between items-center"><label class="font-black text-orange-600 text-sm uppercase mb-0">PIP / UM/UIM Coverage Stack</label><button onclick="addPIPUM()" class="add-btn no-print">+ Add Coverage</button></div>
                     <div id="pip-um-container" class="space-y-4"></div>
                 </div>
             </div>
 
             <div id="pane-liens" class="tab-pane">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-black text-slate-400 uppercase text-[11px]">Outstanding Case Liens</h3>
-                    <button onclick="addLien()" class="bg-slate-900 text-white text-[11px] px-5 py-2.5 rounded no-print font-bold hover:bg-slate-800 transition-all">+ ADD LIEN ENTRY</button>
+                    <div class="section-head" style="margin-bottom:0;">Outstanding Case Liens</div>
+                    <button onclick="addLien()" class="add-btn no-print">+ Add Lien Entry</button>
                 </div>
                 <div id="lien-container" class="space-y-4"></div>
             </div>
 
             <div id="pane-medical" class="tab-pane">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-black text-slate-400 uppercase text-[11px]">Provider Treatment Matrix</h3>
-                    <button onclick="addFacility()" class="bg-orange-600 text-white text-[11px] px-5 py-2.5 rounded no-print font-bold hover:bg-orange-700 transition-all">+ ADD MEDICAL FACILITY</button>
+                <div class="pdf-card">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="section-head" style="margin-bottom:0;">Provider Treatment Matrix</div>
+                        <button onclick="addFacility()" class="add-btn no-print">+ Add Medical Facility</button>
+                    </div>
+                    <table class="treat-table w-full">
+                        <thead>
+                            <tr>
+                                <th width="190">Medical Facility</th>
+                                <th width="170">Specialty</th>
+                                <th width="180">Provider Contact</th>
+                                <th width="170">Dates of Treatment</th>
+                                <th width="150">Treatment Status</th>
+                                <th width="140">Invoiced Charges</th>
+                                <th width="30"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="facility-container"></tbody>
+                    </table>
                 </div>
-                <div id="facility-container" class="space-y-4"></div>
-                <div class="pdf-card bg-green-50 mt-8 border-l-8 border-green-600 flex justify-between items-center">
+                <div class="pdf-card bg-green-50 mt-4 border-l-8 border-green-600 flex justify-between items-center">
                     <span class="font-black uppercase text-green-700 text-sm tracking-widest">Total Medical Specials (Auto-Calc)</span>
-                    <span id="med-total" class="text-4xl font-black text-green-800">$ 0.00</span>
+                    <span id="med-total" class="text-4xl font-black text-green-800 mono">$ 0.00</span>
                 </div>
             </div>
 
             <div id="pane-pd" class="tab-pane">
                 <div class="pdf-card border-l-8 border-orange-500 mb-8">
-                    <h3 class="font-black text-orange-500 text-[11px] mb-6 uppercase italic tracking-widest">Client Vehicle</h3>
-                    <div class="grid grid-cols-3 gap-6 mb-8">
-                        <div><label>Year</label><div contenteditable="true"></div></div>
-                        <div><label>Make</label><div contenteditable="true"></div></div>
-                        <div><label>Model</label><div contenteditable="true"></div></div>
+                    <div class="section-head">Client Vehicle</div>
+                    <div class="grid grid-cols-4 gap-6 mb-8">
+                        <div><label>Year</label><div contenteditable="true" data-ph="YYYY"></div></div>
+                        <div><label>Make</label><div contenteditable="true" data-ph="Enter make"></div></div>
+                        <div><label>Model</label><div contenteditable="true" data-ph="Enter model"></div></div>
+                        <div><label>License Plate No.</label><div contenteditable="true" data-ph="Enter plate number" class="mono"></div></div>
                     </div>
                     <div class="bg-slate-50 p-6 rounded-lg">
                         <div class="grid grid-cols-2 gap-8">
-                            <div><label>Registered Owner</label><div contenteditable="true"></div></div>
-                            <div><label>Driver's Name</label><div contenteditable="true"></div></div>
+                            <div><label>Registered Owner</label><div contenteditable="true" data-ph="Enter owner"></div></div>
+                            <div><label>Driver's Name</label><div contenteditable="true" data-ph="Enter driver"></div></div>
                         </div>
                     </div>
                 </div>
                 <div class="pdf-card border-l-8 border-slate-400">
-                    <h3 class="font-black text-slate-400 text-[11px] mb-6 uppercase italic tracking-widest">Third Party Vehicle</h3>
-                    <div class="grid grid-cols-3 gap-6 mb-8">
-                        <div><label>Year</label><div contenteditable="true"></div></div>
-                        <div><label>Make</label><div contenteditable="true"></div></div>
-                        <div><label>Model</label><div contenteditable="true"></div></div>
+                    <div class="section-head" style="background:#334155;">Third Party Vehicle</div>
+                    <div class="grid grid-cols-4 gap-6 mb-8">
+                        <div><label>Year</label><div contenteditable="true" data-ph="YYYY"></div></div>
+                        <div><label>Make</label><div contenteditable="true" data-ph="Enter make"></div></div>
+                        <div><label>Model</label><div contenteditable="true" data-ph="Enter model"></div></div>
+                        <div><label>License Plate No.</label><div contenteditable="true" data-ph="Enter plate number" class="mono"></div></div>
                     </div>
                     <div class="bg-slate-50 p-6 rounded-lg">
                         <div class="grid grid-cols-2 gap-8 mb-6">
-                            <div><label>Registered Owner</label><div contenteditable="true"></div></div>
-                            <div><label>Driver's Name</label><div contenteditable="true"></div></div>
+                            <div><label>Registered Owner</label><div contenteditable="true" data-ph="Enter owner"></div></div>
+                            <div><label>Driver's Name</label><div contenteditable="true" data-ph="Enter driver"></div></div>
                         </div>
                         <div class="grid grid-cols-2 gap-8">
                             <div><label>Driver Insured?</label><select class="prof-input"><option>Select</option><option>Yes</option><option>No</option></select></div>
-                            <div><label>Carrier / Policy Details</label><div contenteditable="true"></div></div>
+                            <div><label>Carrier / Policy Details</label><div contenteditable="true" data-ph="Enter carrier & policy"></div></div>
                         </div>
                     </div>
                 </div>
@@ -449,27 +612,19 @@
             <div id="pane-litigation" class="tab-pane">
                 <div class="pdf-card border-l-8 border-orange-500 mb-6">
                     <div class="grid grid-cols-4 gap-8">
-                        <div><label>Statute (SOL)</label><div contenteditable="true" class="sol-font-fix">MM/DD/YYYY</div></div>
-                        <div><label>Complaint Filed</label><div contenteditable="true" class="sol-font-fix">MM/DD/YYYY</div></div>
-                        <div><label>Discovery Cut-off</label><div contenteditable="true" class="sol-font-fix">MM/DD/YYYY</div></div>
-                        <div><label>Trial Date</label><div contenteditable="true" class="sol-font-fix text-orange-600">MM/DD/YYYY</div></div>
+                        <div><label>Statute of Limitations (SOL)</label><div contenteditable="true" class="sol-font-fix" data-ph="MM/DD/YYYY"></div></div>
+                        <div><label>Complaint Filed</label><div contenteditable="true" class="sol-font-fix" data-ph="MM/DD/YYYY"></div></div>
+                        <div><label>Discovery Cut-off</label><div contenteditable="true" class="sol-font-fix" data-ph="MM/DD/YYYY"></div></div>
+                        <div><label>Trial Date</label><div contenteditable="true" class="sol-font-fix text-orange-600" data-ph="MM/DD/YYYY"></div></div>
                     </div>
                 </div>
                 <div class="pdf-card shadow-lg">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-black uppercase text-[11px] tracking-widest">Discovery & Filing Tracker</h3>
-                        <button onclick="addRow('lit-body')" class="bg-slate-900 text-white text-[10px] px-4 py-2 rounded no-print font-black">+ ADD TASK</button>
+                        <div class="section-head" style="margin-bottom:0;">Discovery & Filing Tracker</div>
+                        <button onclick="addRow('lit-body')" class="add-btn no-print">+ Add Task</button>
                     </div>
                     <table class="treat-table w-full">
-                        <thead>
-                            <tr>
-                                <th width="200">Task Type</th>
-                                <th width="200">Party Involved</th>
-                                <th width="150">Due Date</th>
-                                <th width="150">Status</th>
-                                <th width="40"></th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th width="200">Task Type</th><th width="200">Party Involved</th><th width="150">Due Date</th><th width="150">Status</th><th width="40"></th></tr></thead>
                         <tbody id="lit-body"></tbody>
                     </table>
                 </div>
@@ -478,31 +633,23 @@
             <div id="pane-finance" class="tab-pane">
                 <div class="pdf-card border-l-8 border-orange-500">
                     <div class="flex justify-between items-center mb-6">
-                        <h3>Finance Tracking</h3>
-                        <button onclick="addRow('fin-body')" class="bg-slate-950 text-white text-[10px] px-4 py-2 rounded no-print font-bold">+ ADD ENTRY</button>
+                        <div class="section-head" style="margin-bottom:0;">Finance Tracking</div>
+                        <button onclick="addRow('fin-body')" class="add-btn no-print">+ Add Entry</button>
                     </div>
                     <table class="treat-table w-full">
-                        <thead>
-                            <tr>
-                                <th width="150">Date</th>
-                                <th width="200">Assigned To</th>
-                                <th>Expense ID / Description</th>
-                                <th width="150">Amount</th>
-                                <th width="40"></th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th width="150">Date</th><th width="200">Assigned To</th><th>Expense ID / Description</th><th width="150">Amount</th><th width="40"></th></tr></thead>
                         <tbody id="fin-body"></tbody>
                     </table>
                 </div>
                 <div class="pdf-card bg-blue-50 mt-4 flex justify-between items-center">
                     <span class="font-black uppercase text-blue-700 text-xs">Consolidated File Expenses</span>
-                    <span id="exp-total" class="text-2xl font-black text-blue-700">$ 0.00</span>
+                    <span id="exp-total" class="text-2xl font-black text-blue-700 mono">$ 0.00</span>
                 </div>
             </div>
 
             <div id="pane-docs" class="tab-pane">
                 <div class="pdf-card border-l-8 border-orange-500">
-                    <h3 class="mb-6 uppercase text-[11px] font-black text-orange-500 italic">Quick Label Portal</h3>
+                    <div class="section-head">Quick Label Portal</div>
                     <div class="grid grid-cols-4 lg:grid-cols-8 gap-3 mb-8 no-print">
                         <button onclick="addDocument('Medical Records')" class="hub-btn">Medical</button>
                         <button onclick="addDocument('Police Report')" class="hub-btn">Police</button>
@@ -519,7 +666,7 @@
 
             <div id="pane-notes" class="tab-pane">
                 <div class="pdf-card border-l-8 border-orange-500">
-                    <div class="flex justify-between items-center mb-6"><h3>Case Chronology</h3><button onclick="addRow('note-body')" class="bg-slate-900 text-white text-[10px] px-4 py-2 rounded no-print font-bold">+ ADD NOTE</button></div>
+                    <div class="flex justify-between items-center mb-6"><div class="section-head" style="margin-bottom:0;">Case Chronology</div><button onclick="addRow('note-body')" class="add-btn no-print">+ Add Note</button></div>
                     <table class="treat-table w-full">
                         <thead><tr><th width="150">Date</th><th width="200">Staff Member</th><th>Note Content</th><th width="40"></th></tr></thead>
                         <tbody id="note-body"></tbody>
@@ -528,7 +675,7 @@
             </div>
             <div id="pane-tasks" class="tab-pane">
                 <div class="pdf-card border-l-8 border-orange-500">
-                    <div class="flex justify-between items-center mb-6"><h3>Action Item Log</h3><button onclick="addRow('task-body')" class="bg-orange-600 text-white text-[10px] px-4 py-2 rounded no-print font-bold">+ ADD TASK</button></div>
+                    <div class="flex justify-between items-center mb-6"><div class="section-head" style="margin-bottom:0;">Action Item Log</div><button onclick="addRow('task-body')" class="add-btn no-print">+ Add Task</button></div>
                     <table class="treat-table w-full">
                         <thead><tr><th width="150">Date</th><th width="200">Staff Assigned</th><th>Task Description</th><th width="40"></th></tr></thead>
                         <tbody id="task-body"></tbody>
@@ -538,10 +685,116 @@
 
         </div>
     </main>
+    </div>
+
+    <!-- ===== ADMIN LOGIN MODAL ===== -->
+    <div class="modal-overlay no-print" id="admin-login-modal">
+        <div class="modal-box">
+            <h2 class="serif">Administrator Access</h2>
+            <div class="sub mono">Restricted · Master Control</div>
+            <div id="admin-error">Invalid credentials. Access denied.</div>
+            <label>Username</label>
+            <input type="text" id="admin-user" autocomplete="off" placeholder="Enter username">
+            <label>Password</label>
+            <input type="password" id="admin-pass" autocomplete="off" placeholder="Enter password">
+            <div class="modal-btn-row">
+                <button class="btn-ghost" onclick="closeAdminModal()">Cancel</button>
+                <button class="btn-primary" onclick="attemptAdminLogin()">Log In</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN MASTER CONTROL PANEL ===== -->
+    <div class="modal-overlay no-print" id="admin-panel-modal">
+        <div class="modal-box wide">
+            <h2 class="serif">👁 Master Control</h2>
+            <div class="sub mono">Administrator Session Active</div>
+
+            <div class="admin-panel-grid">
+                <div class="admin-tile">
+                    <h4>Archived Cases</h4>
+                    <div class="admin-stat" id="admin-stat-cases">0</div>
+                    <div class="admin-stat-label">Records in Repository</div>
+                </div>
+                <div class="admin-tile">
+                    <h4>Current Case</h4>
+                    <div class="admin-stat" id="admin-stat-name" style="font-size:14px;">—</div>
+                    <div class="admin-stat-label" id="admin-stat-phase">No active phase</div>
+                </div>
+                <div class="admin-tile">
+                    <h4>Medical Specials On Screen</h4>
+                    <div class="admin-stat" id="admin-stat-med">$0.00</div>
+                    <div class="admin-stat-label">Auto-calculated</div>
+                </div>
+                <div class="admin-tile">
+                    <h4>Session Started</h4>
+                    <div class="admin-stat" id="admin-stat-time" style="font-size:14px;">—</div>
+                    <div class="admin-stat-label">Local session time</div>
+                </div>
+            </div>
+
+            <div class="admin-tile mt-4" style="margin-top:14px;">
+                <h4>Agency Logo / Seal</h4>
+                <p style="font-size:11px; color:#64748b; margin-bottom:10px;">Displayed as a 1×1 square tile. Any image is automatically cropped to fit.</p>
+                <div style="display:flex; align-items:center; gap:14px;">
+                    <label class="btn-primary" style="cursor:pointer; text-align:center; padding:10px 16px; border-radius:6px; font-size:11px; font-weight:800; text-transform:uppercase;">
+                        Upload / Change Logo
+                        <input type="file" accept="image/*" class="hidden" onchange="changeLogo(this)">
+                    </label>
+                    <button class="btn-ghost" style="border-radius:6px;padding:10px 16px;" onclick="resetLogo()">Reset to Default</button>
+                </div>
+            </div>
+
+            <div class="admin-tile mt-4" style="margin-top:14px;">
+                <h4>Interface Background Image</h4>
+                <p style="font-size:11px; color:#64748b; margin-bottom:10px;">Uploaded photos sit behind the interface color, which is automatically applied on top at 65% strength so text stays readable.</p>
+                <div style="display:flex; align-items:center; gap:14px;">
+                    <label class="btn-primary" style="cursor:pointer; text-align:center; padding:10px 16px; border-radius:6px; font-size:11px; font-weight:800; text-transform:uppercase;">
+                        Upload Background Photo
+                        <input type="file" accept="image/*" class="hidden" onchange="setBackgroundImage(this)">
+                    </label>
+                    <button class="btn-ghost" style="border-radius:6px;padding:10px 16px;" onclick="resetBackgroundImage()">Remove Background</button>
+                </div>
+            </div>
+
+            <div class="admin-tile mt-4" style="margin-top:14px;">
+                <h4>Page Access Control</h4>
+                <p style="font-size:11px; color:#64748b; margin-bottom:10px;">Locking the page blocks all editing until an administrator unlocks it again.</p>
+                <button class="btn-primary" style="border-radius:6px;padding:10px 16px;font-size:11px;" onclick="lockPage()">Lock This Page</button>
+            </div>
+
+            <div class="modal-btn-row">
+                <button class="btn-ghost" onclick="closeAdminPanel()">Close</button>
+                <button class="btn-primary" style="background:var(--classified-red);color:white;" onclick="adminLogout()">Log Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LOCK SCREEN ===== -->
+    <div id="lock-overlay">
+        <div style="font-size:40px;">🔒</div>
+        <h2 class="serif" style="margin:14px 0 4px;">Page Locked by Administrator</h2>
+        <p class="mono" style="font-size:11px; color:#94a3b8; margin-bottom:20px;">Enter administrator credentials to resume access.</p>
+        <div style="width:300px;">
+            <input type="text" id="unlock-user" placeholder="Username" style="width:100%;padding:10px;margin-bottom:8px;border-radius:6px;border:none;font-family:Arial, Helvetica, sans-serif;">
+            <input type="password" id="unlock-pass" placeholder="Password" style="width:100%;padding:10px;margin-bottom:12px;border-radius:6px;border:none;font-family:Arial, Helvetica, sans-serif;">
+            <div id="unlock-error" style="display:none;color:#f87171;font-size:11px;margin-bottom:8px;">Invalid credentials.</div>
+            <button class="btn-primary" style="width:100%;padding:10px;border-radius:6px;" onclick="attemptUnlock()">Unlock Page</button>
+        </div>
+    </div>
 
     <script>
+        /* =========================================================
+           LSH CASE MANAGEMENT SYSTEM — CORE SCRIPT
+           Consolidated, de-duplicated, and cleaned up.
+           ========================================================= */
         const REPO_KEY = 'LSH_ULTRALOCK_V2026_MASTER_DEEP_BUILD_FINAL';
-        
+        const ADMIN_USER = 'LSHADMIN123';
+        const ADMIN_PASS = 'LSHADMINPASS123';
+        const LOGO_KEY = 'LSH_LOGO_DATAURL';
+        const BG_KEY = 'LSH_BG_DATAURL';
+        const LOCK_KEY = 'LSH_PAGE_LOCKED';
+
         const staffOptions = `
             <option>Lead Attorney</option>
             <option>Associate Attorney</option>
@@ -554,6 +807,7 @@
             <option>Intake Specialist</option>
         `;
 
+        /* ---------- Tabs ---------- */
         function showTab(id) {
             document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
@@ -561,8 +815,8 @@
             document.getElementById('tab-' + id).classList.add('active-tab');
         }
 
-        function updatePhaseDisplay(val) { 
-            document.getElementById('display-phase').innerText = val.toUpperCase(); 
+        function updatePhaseDisplay(val) {
+            document.getElementById('display-phase').innerText = val.toUpperCase();
         }
 
         function handleOtherSystem(selectId, otherInputId, revertId) {
@@ -584,32 +838,73 @@
             document.getElementById(revertId).style.display = "none";
         }
 
+        /* ---------- Placeholder auto-labeling (runs once per insertion, no polling) ---------- */
+        function applyPlaceholders(scope) {
+            const root = scope || document;
+            root.querySelectorAll('[contenteditable="true"]').forEach(el => {
+                if (el.hasAttribute('data-ph')) return;
+                const wrap = el.closest('div');
+                const lbl = wrap ? wrap.querySelector('label') : null;
+                el.setAttribute('data-ph', lbl ? ('Enter ' + lbl.innerText.trim()) : 'Enter details');
+            });
+        }
+
+        /* ---------- Dynamic row/card builders ---------- */
         function addRow(id) {
             const tr = document.createElement('tr');
             const today = new Date().toLocaleDateString();
-            if(id === 'lit-body') {
-                tr.innerHTML = `<td><select class="prof-input text-xs"><option>Service</option><option>Complaint</option><option>Summons</option><option>Interrogatories</option><option>RFP</option><option>RFA</option><option>Deposition Notice</option><option>Subpoena</option><option>Motion</option></select></td><td><div contenteditable="true" class="text-xs">...</div></td><td><div contenteditable="true" class="text-xs">MM/DD/YYYY</div></td><td><select class="prof-input text-xs"><option>Pending</option><option>Responded</option><option>Completed</option></select></td><td><button onclick="this.parentElement.parentElement.remove()" class="text-red-500 font-bold">×</button></td>`;
-            } else if(id === 'fin-body') {
-                tr.innerHTML = `<td><div contenteditable="true" class="text-xs">${today}</div></td><td><select class="prof-input text-xs">${staffOptions}</select></td><td><div contenteditable="true" class="text-xs">...</div></td><td><div contenteditable="true" class="font-black exp-field text-xs text-blue-600">$ 0.00</div></td><td><button onclick="this.parentElement.parentElement.remove(); updateTotals();" class="text-red-500 font-bold">×</button></td>`;
-            } else if(id === 'note-body' || id === 'task-body') {
-                tr.innerHTML = `<td><div contenteditable="true" class="text-xs font-bold text-slate-400">${today}</div></td><td><select class="prof-input text-xs">${staffOptions}</select></td><td><div contenteditable="true" class="text-xs min-h-[40px] italic">...</div></td><td><button onclick="this.parentElement.parentElement.remove()" class="text-red-500 font-bold">×</button></td>`;
+            if (id === 'lit-body') {
+                tr.innerHTML = `<td><select class="prof-input text-xs"><option>Service</option><option>Complaint</option><option>Summons</option><option>Interrogatories</option><option>RFP</option><option>RFA</option><option>Deposition Notice</option><option>Subpoena</option><option>Motion</option></select></td><td><div contenteditable="true" class="text-xs" data-ph="Enter party"></div></td><td><div contenteditable="true" class="text-xs" data-ph="MM/DD/YYYY"></div></td><td><select class="prof-input text-xs"><option>Pending</option><option>Responded</option><option>Completed</option></select></td><td><button onclick="this.parentElement.parentElement.remove()" class="text-red-500 font-bold">×</button></td>`;
+            } else if (id === 'fin-body') {
+                tr.innerHTML = `<td><div contenteditable="true" class="text-xs">${today}</div></td><td><select class="prof-input text-xs">${staffOptions}</select></td><td><div contenteditable="true" class="text-xs" data-ph="Enter description"></div></td><td><div contenteditable="true" class="font-black exp-field text-xs text-blue-600" data-ph="$ 0.00"></div></td><td><button onclick="this.parentElement.parentElement.remove(); updateTotals();" class="text-red-500 font-bold">×</button></td>`;
+            } else if (id === 'note-body' || id === 'task-body') {
+                tr.innerHTML = `<td><div contenteditable="true" class="text-xs font-bold text-slate-400">${today}</div></td><td><select class="prof-input text-xs">${staffOptions}</select></td><td><div contenteditable="true" class="text-xs min-h-[40px] italic" data-ph="Enter details"></div></td><td><button onclick="this.parentElement.parentElement.remove()" class="text-red-500 font-bold">×</button></td>`;
             }
             document.getElementById(id).appendChild(tr);
+            applyPlaceholders(tr);
+        }
+
+        /* ---------- Case ID auto-generation: LSH-<Year>-<Type>-<XXXXXX> ---------- */
+        const TYPE_CODES = { 'MVA': 'MVA', 'Slip and Fall': 'SNF', 'Dog Bite': 'DOG' };
+        function currentTypeCode() {
+            const sel = document.getElementById('main-case-type');
+            if (sel.value === 'Others') {
+                const other = document.getElementById('main-case-other').innerText.trim();
+                return other ? other.replace(/[^A-Za-z0-9]/g, '').toUpperCase().substring(0, 4) || 'OTH' : 'OTH';
+            }
+            return TYPE_CODES[sel.value] || sel.value.replace(/\s+/g, '').toUpperCase().substring(0, 3);
+        }
+        function nextSeriesNumber() {
+            let n = parseInt(localStorage.getItem('LSH_CASE_SERIES_COUNTER') || '0', 10) + 1;
+            localStorage.setItem('LSH_CASE_SERIES_COUNTER', String(n));
+            return String(n).padStart(6, '0');
+        }
+        function generateCaseId(forceNewSeries) {
+            const year = new Date().getFullYear();
+            const typeCode = currentTypeCode();
+            const field = document.getElementById('case-id-field');
+            let series = field.dataset.series;
+            if (!series || forceNewSeries) {
+                series = nextSeriesNumber();
+                field.dataset.series = series;
+            }
+            field.innerText = `LSH-${year}-${typeCode}-${series}`;
         }
 
         function addBI() {
             const div = document.createElement('div'); div.className = "pdf-card border-l-4 border-red-500 relative bg-white p-6 mb-4 shadow-sm";
             div.innerHTML = `<button onclick="this.parentElement.remove()" class="absolute top-2 right-4 text-slate-300 no-print">×</button>
                 <div class="grid grid-cols-4 gap-6 mb-6">
-                    <div><label>Policy Holder</label><div contenteditable="true"></div></div>
-                    <div><label>Carrier</label><div contenteditable="true"></div></div>
-                    <div><label>Policy #</label><div contenteditable="true"></div></div>
-                    <div><label>Claim #</label><div contenteditable="true"></div></div>
+                    <div><label>Policy Holder</label><div contenteditable="true" data-ph="Enter policy holder"></div></div>
+                    <div><label>Carrier</label><div contenteditable="true" data-ph="Enter carrier"></div></div>
+                    <div><label>Policy #</label><div contenteditable="true" data-ph="Enter policy #"></div></div>
+                    <div><label>Claim #</label><div contenteditable="true" data-ph="Enter claim #"></div></div>
                 </div>
-                <div class="grid grid-cols-3 gap-6">
-                    <div><label>Adjuster Name</label><div contenteditable="true"></div></div>
+                <div class="grid grid-cols-4 gap-6">
+                    <div><label>Adjuster Name</label><div contenteditable="true" data-ph="Enter adjuster name"></div></div>
+                    <div><label>Adjuster Contact</label><div contenteditable="true" data-ph="Enter adjuster contact"></div></div>
                     <div><label>Liability Accepted?</label><select class="prof-input"><option>Pending</option><option>Yes</option><option>No</option></select></div>
-                    <div><label>Policy Limits</label><div contenteditable="true"></div></div>
+                    <div><label>Policy Limits</label><div contenteditable="true" data-ph="Enter limits"></div></div>
                 </div>`;
             document.getElementById('bi-container').appendChild(div);
         }
@@ -618,15 +913,16 @@
             const div = document.createElement('div'); div.className = "pdf-card border-l-4 border-orange-500 relative bg-white p-6 mb-4 shadow-sm";
             div.innerHTML = `<button onclick="this.parentElement.remove()" class="absolute top-2 right-4 text-slate-300 no-print">×</button>
                 <div class="grid grid-cols-4 gap-6 mb-6">
-                    <div><label>Coverage Type</label><select class="prof-input"><option>PIP</option><option>UM</option><option>UIM</option></select></div>
-                    <div><label>Policy Holder</label><div contenteditable="true"></div></div>
-                    <div><label>Insurance Carrier</label><div contenteditable="true"></div></div>
-                    <div><label>Policy #</label><div contenteditable="true"></div></div>
+                    <div><label>Coverage Type</label><select class="prof-input"><option>PIP</option><option>UM/UIM</option></select></div>
+                    <div><label>Policy Holder</label><div contenteditable="true" data-ph="Enter policy holder"></div></div>
+                    <div><label>Insurance Carrier</label><div contenteditable="true" data-ph="Enter carrier"></div></div>
+                    <div><label>Policy #</label><div contenteditable="true" data-ph="Enter policy #"></div></div>
                 </div>
-                <div class="grid grid-cols-3 gap-6">
-                    <div><label>Claim Number</label><div contenteditable="true"></div></div>
-                    <div><label>Adjuster Contact</label><div contenteditable="true"></div></div>
-                    <div><label>Policy Limits</label><div contenteditable="true"></div></div>
+                <div class="grid grid-cols-4 gap-6">
+                    <div><label>Claim Number</label><div contenteditable="true" data-ph="Enter claim #"></div></div>
+                    <div><label>Adjuster Name</label><div contenteditable="true" data-ph="Enter adjuster name"></div></div>
+                    <div><label>Adjuster Contact</label><div contenteditable="true" data-ph="Enter adjuster contact"></div></div>
+                    <div><label>Policy Limits</label><div contenteditable="true" data-ph="Enter limits"></div></div>
                 </div>`;
             document.getElementById('pip-um-container').appendChild(div);
         }
@@ -636,568 +932,287 @@
             const div = document.createElement('div'); div.className = "pdf-card border-l-4 border-slate-900 relative bg-white p-6 mb-4 shadow-sm";
             div.innerHTML = `<button onclick="this.parentElement.remove()" class="absolute top-2 right-4 text-slate-300 no-print">×</button>
                 <div class="grid grid-cols-4 gap-6">
-                    <div><label>Type of Lien</label><div class="flex items-center"><select id="l-sel-${id}" onchange="handleOtherSystem(this.id, 'l-oth-${id}', 'l-rev-${id}')" class="prof-input"><option>Prior Atty Lien</option><option>Medical Lien</option><option>HI Subro</option><option>Funding</option><option>Other</option></select><div id="l-oth-${id}" contenteditable="true" class="hidden text-xs font-bold px-2 py-1 bg-orange-50 border border-orange-200 min-w-[80px]">...</div><button id="l-rev-${id}" onclick="revertOther('l-sel-${id}', 'l-oth-${id}', this.id)" class="revert-btn">↺</button></div></div>
-                    <div><label>Lienholder Entity</label><div contenteditable="true"></div></div>
-                    <div><label>Claim / File #</label><div contenteditable="true"></div></div>
-                    <div><label>Lien Amount</label><div contenteditable="true" class="text-red-600 font-bold">$ 0.00</div></div>
+                    <div><label>Type of Lien</label><div class="flex items-center"><select id="l-sel-${id}" onchange="handleOtherSystem(this.id, 'l-oth-${id}', 'l-rev-${id}')" class="prof-input"><option>Prior Atty Lien</option><option>Medical Lien</option><option>HI Subro</option><option>Funding</option><option>Other</option></select><div id="l-oth-${id}" contenteditable="true" data-ph="Specify type" class="hidden text-xs font-bold px-2 py-1 bg-orange-50 border border-orange-200 min-w-[80px]"></div><button id="l-rev-${id}" onclick="revertOther('l-sel-${id}', 'l-oth-${id}', this.id)" class="revert-btn">↺</button></div></div>
+                    <div><label>Lienholder Entity</label><div contenteditable="true" data-ph="Enter entity"></div></div>
+                    <div><label>Claim / File #</label><div contenteditable="true" data-ph="Enter claim / file #"></div></div>
+                    <div><label>Lien Amount</label><div contenteditable="true" class="text-red-600 font-bold" data-ph="$ 0.00"></div></div>
                 </div>`;
             document.getElementById('lien-container').appendChild(div);
         }
 
         function addFacility() {
             const id = "fac-" + Date.now();
-            const div = document.createElement('div'); div.className = "pdf-card border-l-4 border-orange-500 relative bg-white p-6 mb-4 shadow-sm";
-            div.innerHTML = `<button onclick="this.parentElement.remove(); updateTotals();" class="absolute top-2 right-4 text-slate-300 no-print">×</button>
-                <div class="grid grid-cols-4 gap-6">
-                    <div><label>Medical Facility</label><div contenteditable="true"></div></div>
-                    <div><label>Specialty Dropdown</label><div class="flex items-center"><select id="sel-${id}" onchange="handleOtherSystem(this.id, 'oth-${id}', 'rev-${id}')" class="prof-input"><option>Chiro</option><option>EMC</option><option>Ortho</option><option>Surgery</option><option>Anesthesia</option><option>Pain Management</option><option value="Other">Other</option></select><div id="oth-${id}" contenteditable="true" class="hidden text-xs px-2 py-1 bg-orange-50 border border-orange-200 min-w-[80px]">...</div><button id="rev-${id}" onclick="revertOther('sel-${id}', 'oth-${id}', this.id)" class="revert-btn">↺</button></div></div>
-                    <div><label>Dates of Treatment</label><div contenteditable="true"></div></div>
-                    <div><label>Invoiced Charges</label><div contenteditable="true" class="med-field font-black text-green-700">$ 0.00</div></div>
-                </div>`;
-            document.getElementById('facility-container').appendChild(div);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><div contenteditable="true" class="text-xs" data-ph="Enter facility name"></div></td>
+                <td>
+                    <div class="flex items-center gap-1">
+                        <select id="sel-${id}" onchange="handleOtherSystem(this.id, 'oth-${id}', 'rev-${id}')" class="prof-input text-xs"><option>Chiro</option><option>EMC</option><option>Ortho</option><option>Surgery</option><option>Anesthesia</option><option>Pain Management</option><option value="Other">Other</option></select>
+                        <div id="oth-${id}" contenteditable="true" data-ph="Specify" class="hidden text-xs px-2 py-1 bg-orange-50 border border-orange-200 min-w-[70px]"></div>
+                        <button id="rev-${id}" onclick="revertOther('sel-${id}', 'oth-${id}', this.id)" class="revert-btn">↺</button>
+                    </div>
+                </td>
+                <td><div contenteditable="true" class="text-xs" data-ph="Phone / Email"></div></td>
+                <td><div contenteditable="true" class="text-xs" data-ph="MM/DD/YYYY – MM/DD/YYYY"></div></td>
+                <td><select class="prof-input text-xs"><option>Ongoing</option><option>Discharged</option><option>Referred Out</option><option>Pending Records</option></select></td>
+                <td><div contenteditable="true" class="med-field font-black text-green-700 text-xs" data-ph="$ 0.00"></div></td>
+                <td><button onclick="this.parentElement.parentElement.remove(); updateTotals();" class="text-red-500 font-bold">×</button></td>
+            `;
+            document.getElementById('facility-container').appendChild(tr);
+            applyPlaceholders(tr);
         }
 
         function addPassenger() {
             const div = document.createElement('div'); div.className = "pdf-card border-l-4 border-orange-500 relative bg-white p-6 mb-4 shadow-sm";
             div.innerHTML = `<button onclick="this.parentElement.remove()" class="absolute top-2 right-4 text-slate-300 no-print">×</button>
                 <div class="grid grid-cols-4 gap-6">
-                    <div><label>Full Name</label><div contenteditable="true"></div></div>
-                    <div><label>DOB</label><div contenteditable="true"></div></div>
-                    <div><label>Contact Info</label><div contenteditable="true"></div></div>
-                    <div><label>Injury Sustained</label><div contenteditable="true"></div></div>
+                    <div><label>Full Name</label><div contenteditable="true" data-ph="Enter full name"></div></div>
+                    <div><label>DOB</label><div contenteditable="true" data-ph="MM/DD/YYYY"></div></div>
+                    <div><label>Contact Info</label><div contenteditable="true" data-ph="Enter contact"></div></div>
+                    <div><label>Injury Sustained</label><div contenteditable="true" data-ph="Enter injury"></div></div>
                 </div>`;
             document.getElementById('passenger-container').appendChild(div);
         }
 
-        function addDocument(label) { const tr = document.createElement('tr'); tr.innerHTML = `<td width="200"><div class="bg-slate-100 p-2 rounded text-[10px] font-black border text-center uppercase">${label}</div></td><td><div contenteditable="true" class="text-xs italic text-slate-500">Summary...</div></td><td width="40"><button onclick="this.parentElement.parentElement.remove()" class="text-red-300 font-bold">×</button></td>`; document.getElementById('doc-body').appendChild(tr); }
-
-        function updateTotals() { 
-            let med = 0; document.querySelectorAll('.med-field').forEach(el => med += parseFloat(el.innerText.replace(/[$,\s]/g, '')) || 0); 
-            document.getElementById('med-total').innerText = '$ ' + med.toLocaleString(undefined, {minimumFractionDigits: 2}); 
-            let exp = 0; document.querySelectorAll('.exp-field').forEach(el => exp += parseFloat(el.innerText.replace(/[$,\s]/g, '')) || 0); 
-            if(document.getElementById('exp-total')) document.getElementById('exp-total').innerText = '$ ' + exp.toLocaleString(undefined, {minimumFractionDigits: 2}); 
+        function addDocument(label) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td width="200"><div class="bg-slate-100 p-2 rounded text-[10px] font-black border text-center uppercase">${label}</div></td><td><div contenteditable="true" class="text-xs italic text-slate-500" data-ph="Enter summary"></div></td><td width="40"><button onclick="this.parentElement.parentElement.remove()" class="text-red-300 font-bold">×</button></td>`;
+            document.getElementById('doc-body').appendChild(tr);
+            applyPlaceholders(tr);
         }
-        setInterval(updateTotals, 1000);
 
-        function saveCase() { 
-            const name = document.getElementById('client-name-field').innerText.split('\n')[0].trim();
-            const data = { id: Date.now(), name: name, phase: document.getElementById('display-phase').innerText, html: { pass: document.getElementById('passenger-container').innerHTML, facs: document.getElementById('facility-container').innerHTML, fin: document.getElementById('fin-body').innerHTML, pipum: document.getElementById('pip-um-container').innerHTML, bi: document.getElementById('bi-container').innerHTML, docs: document.getElementById('doc-body').innerHTML, lit: document.getElementById('lit-body').innerHTML, liens: document.getElementById('lien-container').innerHTML, notes: document.getElementById('note-body').innerHTML, tasks: document.getElementById('task-body').innerHTML, police: document.getElementById('pane-police').innerHTML }, inputs: Array.from(document.querySelectorAll('[contenteditable="true"]')).map(el => el.innerHTML), sels: Array.from(document.querySelectorAll('select')).map(el => el.value) }; 
-            let repo = JSON.parse(localStorage.getItem(REPO_KEY) || '[]'); repo.unshift(data); localStorage.setItem(REPO_KEY, JSON.stringify(repo)); renderRepo(); 
+        /* ---------- Totals ---------- */
+        function updateTotals() {
+            let med = 0; document.querySelectorAll('.med-field').forEach(el => med += parseFloat(el.innerText.replace(/[^0-9.-]/g, '')) || 0);
+            document.getElementById('med-total').innerText = '$ ' + med.toLocaleString(undefined, { minimumFractionDigits: 2 });
+            let exp = 0; document.querySelectorAll('.exp-field').forEach(el => exp += parseFloat(el.innerText.replace(/[^0-9.-]/g, '')) || 0);
+            if (document.getElementById('exp-total')) document.getElementById('exp-total').innerText = '$ ' + exp.toLocaleString(undefined, { minimumFractionDigits: 2 });
         }
-        function renderRepo() { const list = document.getElementById('repo-list'); let repo = JSON.parse(localStorage.getItem(REPO_KEY) || '[]'); list.innerHTML = repo.map(item => `<div onclick="loadCase(${item.id})" class="repo-card group p-3 rounded-lg"><span class="repo-name block font-bold text-xs mb-1">${item.name}</span><button onclick="deleteCase(${item.id}, event)" class="absolute top-1 right-2 text-slate-500">×</button></div>`).join(''); }
-        function loadCase(id) { let repo = JSON.parse(localStorage.getItem(REPO_KEY) || '[]'); const data = repo.find(i => i.id === id); if (!data) return; document.getElementById('passenger-container').innerHTML = data.html.pass; document.getElementById('facility-container').innerHTML = data.html.facs; document.getElementById('fin-body').innerHTML = data.html.fin; document.getElementById('pip-um-container').innerHTML = data.html.pipum; document.getElementById('bi-container').innerHTML = data.html.bi; document.getElementById('doc-body').innerHTML = data.html.docs; document.getElementById('lit-body').innerHTML = data.html.lit; document.getElementById('lien-container').innerHTML = data.html.liens; document.getElementById('note-body').innerHTML = data.html.notes || ""; document.getElementById('task-body').innerHTML = data.html.tasks || ""; document.getElementById('pane-police').innerHTML = data.html.police; const edits = document.querySelectorAll('[contenteditable="true"]'); data.inputs.forEach((v, i) => { if(edits[i]) edits[i].innerHTML = v; }); const selects = document.querySelectorAll('select'); data.sels.forEach((v, i) => { if(selects[i]) selects[i].value = v; }); updateTotals(); showTab('profile'); }
-        function deleteCase(id, e) { e.stopPropagation(); if(confirm("Delete Case?")) { let repo = JSON.parse(localStorage.getItem(REPO_KEY) || '[]'); localStorage.setItem(REPO_KEY, JSON.stringify(repo.filter(i => i.id !== id))); renderRepo(); } }
-        function exportRepo() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([localStorage.getItem(REPO_KEY)], {type:'application/json'})); a.download='LSH_Backup.json'; a.click(); }
-        function importRepo(i) { const r = new FileReader(); r.onload = (e) => { localStorage.setItem(REPO_KEY, e.target.result); renderRepo(); alert("Data Imported"); }; r.readAsText(i.files[0]); }
-        function downloadPDF() {
-    // 1. Create a "Virtual Page" (This never appears on your screen)
-    const virtualPage = document.createElement('div');
-    Object.assign(virtualPage.style, {
-        padding: '50px',
-        backgroundColor: '#ffffff',
-        color: '#000000',
-        fontFamily: 'Arial, sans-serif',
-        lineHeight: '1.5'
-    });
-
-    // 2. Identify the Case Basics
-    const clientName = document.getElementById('client-name-field').innerText.trim() || "UNNAMED CLIENT";
-    const phase = document.getElementById('display-phase').innerText;
-
-    // 3. Construct the Header for the PDF
-    virtualPage.innerHTML = `
-        <div style="border-bottom: 5px solid #000; margin-bottom: 30px; padding-bottom: 10px;">
-            <h1 style="margin:0; font-size: 28px; text-transform: uppercase;">${clientName}</h1>
-            <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 10px; font-weight: bold; text-transform: uppercase;">
-                <span style="color: #f97316;">PHASE: ${phase}</span>
-                <span style="color: #64748b;">DATE: ${new Date().toLocaleDateString()}</span>
-            </div>
-        </div>
-    `;
-
-    // 4. Scrape Data from PDF Cards
-    const cards = document.querySelectorAll('.pdf-card');
-    
-    cards.forEach(card => {
-        // Find the specific Header for the section
-        const header = card.querySelector('h3, label[style*="background-color: black"], label[style*="background-color: rgb(0, 0, 0)"]');
-        if (!header) return;
-
-        let sectionContent = "";
-        const inputs = card.querySelectorAll('[contenteditable="true"], select');
-
-        inputs.forEach(input => {
-            const val = input.tagName === 'SELECT' ? input.value : input.innerText.trim();
-            
-            // List of placeholders to ignore
-            const placeholders = ["MM/DD/YYYY", "(000) 000-0000", "$ 0.00", "Enter facts of loss...", "...", "Summary...", "Select Staff", ""];
-            
-            if (val && !placeholders.includes(val)) {
-                let labelText = "Detail";
-                if (input.previousElementSibling?.tagName === "LABEL") {
-                    labelText = input.previousElementSibling.innerText;
-                } else if (input.closest('div')?.querySelector('label')) {
-                    labelText = input.closest('div').querySelector('label').innerText;
-                }
-
-                sectionContent += `
-                    <div style="margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px;">
-                        <div style="font-size: 8px; font-weight: 900; color: #94a3b8; text-transform: uppercase;">${labelText}</div>
-                        <div style="font-size: 11px; font-weight: bold; color: #000;">${val}</div>
-                    </div>
-                `;
-            }
+        // Recalculate on input instead of aggressive polling — avoids flicker/lag.
+        document.addEventListener('input', (e) => {
+            if (e.target && (e.target.classList.contains('med-field') || e.target.classList.contains('exp-field'))) updateTotals();
         });
+        setInterval(updateTotals, 4000); // light safety-net, not a UI repaint loop
 
-        if (sectionContent) {
-            virtualPage.innerHTML += `
-                <div style="margin-bottom: 30px; break-inside: avoid;">
-                    <h2 style="background-color: #000; color: #fff; font-size: 12px; padding: 6px 12px; text-transform: uppercase; margin-bottom: 15px;">${header.innerText}</h2>
-                    <div>${sectionContent}</div>
-                </div>
-            `;
+        /* ---------- Case repository ---------- */
+        function saveCase() {
+            const name = (document.getElementById('client-name-field').innerText.split('\n')[0] || 'Unnamed Client').trim();
+            const data = { id: Date.now(), name: name, phase: document.getElementById('display-phase').innerText, caseId: document.getElementById('case-id-field').innerText,
+                html: { pass: document.getElementById('passenger-container').innerHTML, facs: document.getElementById('facility-container').innerHTML, fin: document.getElementById('fin-body').innerHTML, pipum: document.getElementById('pip-um-container').innerHTML, bi: document.getElementById('bi-container').innerHTML, docs: document.getElementById('doc-body').innerHTML, lit: document.getElementById('lit-body').innerHTML, liens: document.getElementById('lien-container').innerHTML, notes: document.getElementById('note-body').innerHTML, tasks: document.getElementById('task-body').innerHTML, police: document.getElementById('pane-police').innerHTML },
+                inputs: Array.from(document.querySelectorAll('[contenteditable="true"]')).map(el => el.innerHTML),
+                sels: Array.from(document.querySelectorAll('select')).map(el => el.value) };
+            let repo = JSON.parse(localStorage.getItem(REPO_KEY) || '[]'); repo.unshift(data); localStorage.setItem(REPO_KEY, JSON.stringify(repo)); renderRepo();
         }
-    });
-
-    const exportOptions = {
-        margin: [0.5, 0.5],
-        filename: `LSH_SUMMARY_${clientName.replace(/\s+/g, '_')}.pdf`,
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-
-    html2pdf().set(exportOptions).from(virtualPage).save().then(() => {
-        virtualPage.remove();
-    });
-}
-        window.onload = renderRepo;
-    </script>
-    <script>
-    /**
- * LSH MASTER THEME OVERRIDE - V2026.4
- * Forces specific headers to: Arial Bold White on Black
- * Forces content to: Arial 10pt Bold Black
- */
-function applyLSHMasterStyles() {
-    // 1. LIST OF ALL 20 TARGET HEADERS
-    const targetHeaders = [
-        "Identity", 
-        "Employment Details", 
-        "Emergency Contact",
-        "Case Narrative",
-        "Passenger Records",
-        "Police Report Details",
-        "Officer's Narrative Summary", 
-        "Health Insurance", 
-        "Independent Subrogation Card", 
-        "Bodily Injury (BI) Policies", 
-        "PIP / UM / UIM Coverage Stack", 
-        "Outstanding Case Liens", 
-        "Provider Treatment Matrix",
-        "Client Vehicle", 
-        "Third Party Vehicle", 
-        "Discovery & Filing Tracker", 
-        "Finance Tracking", 
-        "Quick Label Portal",
-        "Case Chronology", 
-        "Action Item Log"
-    ];
-
-    // 2. APPLY WHITE ON BLACK TO HEADERS
-    const allTextElements = document.querySelectorAll('h3, label, .text-white-600, .text-blue-600');
-    allTextElements.forEach(el => {
-        const text = el.innerText.trim();
-        // Case-insensitive match against our list
-        if (targetHeaders.some(h => h.toLowerCase() === text.toLowerCase())) {
-            el.style.setProperty('background-color', '#000000', 'important');
-            el.style.setProperty('color', '#f97316', 'important'); // Safety Orange
-            el.style.setProperty('font-family', 'Arial, sans-serif', 'important');
-            el.style.setProperty('font-size', '13px', 'important');
-            el.style.setProperty('font-weight', '900', 'important');
-            el.style.setProperty('padding', '6px 10px', 'important');
-            el.style.setProperty('border-radius', '4px', 'important');
-            el.style.setProperty('display', 'block', 'important');
-            el.style.setProperty('width', '100%', 'important');
-            el.style.setProperty('text-transform', 'uppercase', 'important');
-            el.style.setProperty('margin-bottom', '10px', 'important');
-            el.style.setProperty('letter-spacing', '0.5px', 'important');
+        function renderRepo() {
+            const list = document.getElementById('repo-list'); let repo = JSON.parse(localStorage.getItem(REPO_KEY) || '[]');
+            list.innerHTML = repo.map(item => `<div onclick="loadCase(${item.id})" class="repo-card group p-3 rounded-lg"><span class="repo-name block font-bold text-xs mb-1">${item.name}</span><button onclick="deleteCase(${item.id}, event)" class="absolute top-1 right-2 text-slate-500">×</button></div>`).join('');
         }
-    });
-
-    // 3. APPLY ARIAL 10PT BOLD BLACK TO CONTENT
-    const contentFields = document.querySelectorAll('[contenteditable="true"], select, .sol-font-fix');
-    contentFields.forEach(field => {
-        field.style.setProperty('font-family', 'Arial, sans-serif', 'important');
-        field.style.setProperty('font-size', '10px', 'important');
-        field.style.setProperty('font-weight', 'bold', 'important');
-        field.style.setProperty('color', '#000000', 'important');
-        field.style.setProperty('background-color', '#ffffff', 'important');
-    });
-}
-
-// 4. DATA SCRUBBER (KEEPS CLIENT NAME)
-function wipePlaceholders() {
-    const placeholders = [
-        "MM/DD/YYYY", "(000) 000-0000", "$ 0.00", "BATCH-2026-X", 
-        "Enter facts of loss...", "Type police summary here...", 
-        "Summary...", "...", "TYPE OTHER...", "Enter Name", 
-        "e.g., LAPD / Florida Highway Patrol", "Name & Badge #", "Street / Intersection"
-    ];
-    document.querySelectorAll('[contenteditable="true"]').forEach(el => {
-        if (placeholders.includes(el.innerText.trim())) {
-            el.innerHTML = "";
+        function loadCase(id) {
+            let repo = JSON.parse(localStorage.getItem(REPO_KEY) || '[]'); const data = repo.find(i => i.id === id); if (!data) return;
+            document.getElementById('passenger-container').innerHTML = data.html.pass;
+            document.getElementById('facility-container').innerHTML = data.html.facs;
+            document.getElementById('fin-body').innerHTML = data.html.fin;
+            document.getElementById('pip-um-container').innerHTML = data.html.pipum;
+            document.getElementById('bi-container').innerHTML = data.html.bi;
+            document.getElementById('doc-body').innerHTML = data.html.docs;
+            document.getElementById('lit-body').innerHTML = data.html.lit;
+            document.getElementById('lien-container').innerHTML = data.html.liens;
+            document.getElementById('note-body').innerHTML = data.html.notes || "";
+            document.getElementById('task-body').innerHTML = data.html.tasks || "";
+            document.getElementById('pane-police').innerHTML = data.html.police;
+            if (data.caseId) document.getElementById('case-id-field').innerText = data.caseId;
+            const edits = document.querySelectorAll('[contenteditable="true"]'); data.inputs.forEach((v, i) => { if (edits[i]) edits[i].innerHTML = v; });
+            const selects = document.querySelectorAll('select'); data.sels.forEach((v, i) => { if (selects[i]) selects[i].value = v; });
+            updateTotals(); showTab('profile');
         }
-    });
-}
+        function deleteCase(id, e) { e.stopPropagation(); if (confirm("Delete Case?")) { let repo = JSON.parse(localStorage.getItem(REPO_KEY) || '[]'); localStorage.setItem(REPO_KEY, JSON.stringify(repo.filter(i => i.id !== id))); renderRepo(); } }
+        function exportRepo() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([localStorage.getItem(REPO_KEY) || '[]'], { type: 'application/json' })); a.download = 'LSH_Backup.json'; a.click(); }
+        function importRepo(i) { const r = new FileReader(); r.onload = (e) => { localStorage.setItem(REPO_KEY, e.target.result); renderRepo(); alert("Data Imported"); }; r.readAsText(i.files[0]); }
 
-// 5. OBSERVER & EXECUTION
-const lshObserver = new MutationObserver(() => {
-    applyLSHMasterStyles();
-});
+        /* ---------- PDF export ---------- */
+        function downloadPDF() {
+            const virtualPage = document.createElement('div');
+            Object.assign(virtualPage.style, { padding: '50px', backgroundColor: '#ffffff', color: '#000000', fontFamily: 'Arial, sans-serif', lineHeight: '1.5' });
 
-const targetArea = document.getElementById('capture-area');
-if (targetArea) {
-    lshObserver.observe(targetArea, { childList: true, subtree: true });
-}
+            const clientName = document.getElementById('client-name-field').innerText.trim() || "UNNAMED CLIENT";
+            const phase = document.getElementById('display-phase').innerText;
 
-window.addEventListener('DOMContentLoaded', () => {
-    wipePlaceholders();
-    applyLSHMasterStyles();
-});
-
-// Periodic enforcement (Every 1 second)
-setInterval(applyLSHMasterStyles, 1000);
-</script>
-    <script>
-        /**
- * LSH IDENTITY HIGHLIGHTER
- * Makes the Identity section pop with a glow, border, and shadow.
- */
-function highlightIdentitySection() {
-    // 1. Identify the card containing the "Identity" header
-    const allCards = document.querySelectorAll('.pdf-card');
-    
-    allCards.forEach(card => {
-        if (card.innerText.toUpperCase().includes("IDENTITY")) {
-            // Apply High-Importance Highlight
-            card.style.setProperty('border', '3px solid #f97316', 'important'); // Safety Orange Border
-            card.style.setProperty('box-shadow', '0 0 20px rgba(249, 115, 22, 0.2)', 'important'); // Orange Glow
-            card.style.setProperty('transform', 'scale(1.01)', 'important'); // Subtle Zoom
-            card.style.setProperty('transition', 'all 0.3s ease', 'important');
-            card.style.setProperty('z-index', '10', 'important');
-            
-            }
-    });
-}
-
-// Run on load and during safety check
-window.addEventListener('DOMContentLoaded', highlightIdentitySection);
-setInterval(highlightIdentitySection, 2000);
-    </script>
-             <script>
-    /**
- * LSH CLIENT NAME NUCLEAR OVERRIDE
- * Forces the Client Name to stay 36px Black/Bold Arial and prevents shrinking.
- */
-/**
- * LSH MASTER THEME OVERRIDE - ANTI-BLINK VERSION
- */
-function applyLSHMasterStyles() {
-    // ... [Keep your Header Logic here] ...
-
-    // UPDATED: Content Styling with "Client Name" Protection
-    const contentFields = document.querySelectorAll('[contenteditable="true"], select, .sol-font-fix');
-    
-    contentFields.forEach(field => {
-        // IF THIS IS THE CLIENT NAME, DO NOT SHRINK IT
-        if (field.id === 'client-name-field') {
-            field.style.setProperty('font-size', '36px', 'important');
-            field.style.setProperty('font-weight', '900', 'important');
-        } else {
-            // ALL OTHER FIELDS GET THE STANDARD SIZE
-            field.style.setProperty('font-size', '12px', 'important');
-            field.style.setProperty('font-weight', 'bold', 'important');
-        }
-        
-        // General styles for everyone
-        field.style.setProperty('font-family', 'Arial, sans-serif', 'important');
-        field.style.setProperty('color', '#000000', 'important');
-        field.style.setProperty('background-color', '#ffffff', 'important');
-    });
-}
-
-// Run immediately and continuously to fight off other scripts
-window.addEventListener('DOMContentLoaded', lockClientNameStyle);
-setInterval(lockClientNameStyle, 500); // Check every half-second for maximum stability
-             </script>
-    <script>
-        /**
- * LSH UNIVERSAL BUTTON OVERRIDE
- * Targets all "Add" buttons, replaces text with "ADD", 
- * and forces Orange Background with Black Text.
- */
-function unifyAddButtons() {
-    // Select all buttons on the page
-    const buttons = document.querySelectorAll('button');
-
-    buttons.forEach(btn => {
-        const btnText = btn.innerText.toUpperCase();
-        
-        // If the button text contains "ADD", apply the master style
-        if (btnText.includes("ADD") || btnText.includes("+")) {
-            // 1. Uniform Text
-            btn.innerText = "ADD";
-
-            // 2. Nuclear Visual Override
-            btn.style.setProperty('background-color', '#f97316', 'important'); // Safety Orange
-            btn.style.setProperty('color', '#000000', 'important');           // Jet Black
-            btn.style.setProperty('font-family', 'Arial, sans-serif', 'important');
-            btn.style.setProperty('font-weight', '900', 'important');
-            btn.style.setProperty('font-size', '10px', 'important');
-            btn.style.setProperty('text-transform', 'uppercase', 'important');
-            btn.style.setProperty('letter-spacing', '1px', 'important');
-            
-            // 3. Uniform Shape
-            btn.style.setProperty('padding', '8px 20px', 'important');
-            btn.style.setProperty('border-radius', '6px', 'important');
-            btn.style.setProperty('border', 'none', 'important');
-            btn.style.setProperty('cursor', 'pointer', 'important');
-            btn.style.setProperty('box-shadow', '0 2px 4px rgba(0,0,0,0.1)', 'important');
-            
-            // 4. Ensure it doesn't shrink
-            btn.style.setProperty('min-width', '80px', 'important');
-            btn.style.setProperty('height', '32px', 'important');
-        }
-    });
-}
-
-// Run immediately and every second to catch dynamic buttons
-window.addEventListener('DOMContentLoaded', unifyAddButtons);
-setInterval(unifyAddButtons, 1000);
-    </script>
-    <script>
-                /**
-    });
-
-    // 2. Adjust the headers so they don't take up the whole line vertically
-    const headers = document.querySelectorAll('h3, label');
-    headers.forEach(header => {
-        if (header.style.backgroundColor === 'rgb(0, 0, 0)' || header.style.backgroundColor === 'black') {
-            header.style.setProperty('margin-bottom', '0', 'important'); // Remove the bottom margin
-            header.style.setProperty('display', 'flex', 'important');
-            header.style.setProperty('align-items', 'center', 'important');
-            header.style.setProperty('height', '32px', 'important'); // Match button height
-        }
-    });
-}
-
-// Run immediately and monitor
-window.addEventListener('DOMContentLoaded', fixAlignment);
-setInterval(fixAlignment, 1000);
-        /**
- * LSH NAVIGATION OVERRIDE
- * Makes the main tab buttons bigger, bolder, and high-contrast.
- */
-function enhanceNavigation() {
-    const tabs = document.querySelectorAll('.tab-btn');
-    
-    tabs.forEach(tab => {
-        // 1. Force Larger Text & Bold Arial
-        tab.style.setProperty('font-size', '14px', 'important');
-        tab.style.setProperty('font-weight', '900', 'important');
-        tab.style.setProperty('font-family', 'Arial, sans-serif', 'important');
-        
-        // 2. Increase Spacing & Hit-Area
-        tab.style.setProperty('padding', '12px 20px', 'important');
-        tab.style.setProperty('margin-right', '5px', 'important');
-        
-        // 3. Dynamic Styling based on state
-        if (tab.classList.contains('active-tab')) {
-            // Active Tab Style
-            tab.style.setProperty('color', '#f97316', 'important'); // Safety Orange
-            tab.style.setProperty('border-bottom', '4px solid #f97316', 'important');
-            tab.style.setProperty('background-color', '#0f172a', 'important'); // Dark Navy BG for active
-            tab.style.setProperty('border-radius', '6px 6px 0 0', 'important');
-        } else {
-            // Inactive Tab Style
-            tab.style.setProperty('color', '#64748b', 'important');
-            tab.style.setProperty('border-bottom', '4px solid transparent', 'important');
-            tab.style.setProperty('background-color', 'transparent', 'important');
-        }
-    });
-
-    // Ensure the container allows for the bigger tabs without hiding them
-    const container = document.querySelector('.no-print.overflow-x-auto');
-    if (container) {
-        container.style.setProperty('padding-top', '10px', 'important');
-        container.style.setProperty('padding-bottom', '10px', 'important');
-        container.style.setProperty('display', 'flex', 'important');
-        container.style.setProperty('gap', '10px', 'important');
-    }
-    /**
- * LSH MASTER BUTTON & HEADER ALIGNMENT
- * Snaps Black Headers and Orange ADD Buttons into a perfectly straight line.
- */
-function fixAddButtonAlignment() {
-    // 1. Target the specific buttons
-    const addButtons = document.querySelectorAll('button[onclick*="add"], button[onclick*="addRow"]');
-
-    addButtons.forEach(btn => {
-        // Find the parent container (usually the flex div holding the h3 and button)
-        const parent = btn.parentElement;
-        
-        if (parent) {
-            // FORCE PARENT ALIGNMENT
-            parent.style.setProperty('display', 'flex', 'important');
-            parent.style.setProperty('align-items', 'center', 'important'); // This is the magic fix
-            parent.style.setProperty('gap', '10px', 'important');
-        }
-
-        // BUTTON STYLE LOCK
-        btn.innerText = "ADD";
-        btn.style.setProperty('background-color', '#f97316', 'important'); // Orange BG
-        btn.style.setProperty('color', '#000000', 'important');           // Black Text
-        btn.style.setProperty('font-family', 'Arial, sans-serif', 'important');
-        btn.style.setProperty('font-size', '10px', 'important');
-        btn.style.setProperty('font-weight', '900', 'important');
-        btn.style.setProperty('padding', '0 15px', 'important');         // No top/bottom padding
-        btn.style.setProperty('height', '26px', 'important');            // Explicit height
-        btn.style.setProperty('display', 'inline-flex', 'important');
-        btn.style.setProperty('align-items', 'center', 'important');
-        btn.style.setProperty('border', 'none', 'important');
-        btn.style.setProperty('border-radius', '4px', 'important');
-        btn.style.setProperty('margin', '0', 'important');               // Kill stray margins
-    });
-
-    // 2. Fix the Black Headers so they don't have bottom margins pushing the button down
-    const headers = document.querySelectorAll('h3, label');
-    headers.forEach(header => {
-        if (header.style.backgroundColor === 'rgb(0, 0, 0)' || header.style.backgroundColor === 'black') {
-            header.style.setProperty('margin', '0', 'important');
-            header.style.setProperty('height', '26px', 'important');     // Match button height exactly
-            header.style.setProperty('display', 'flex', 'important');
-            header.style.setProperty('align-items', 'center', 'important');
-        }
-    });
-}
-
-// Run immediately and every second
-window.addEventListener('DOMContentLoaded', fixAddButtonAlignment);
-setInterval(fixAddButtonAlignment, 1000);
-}
-
-// Execute and Loop
-window.addEventListener('DOMContentLoaded', enhanceNavigation);
-setInterval(enhanceNavigation, 1000);
-    </script>
-    <script>
-/**
- * LSH DOCUMENT UPLOAD CONSOLIDATED SYSTEM - V2026
- * Integrates directly with Doc Hub, creates session links, 
- * and enforces LSH Master Visuals.
- */
-
-
-</script>
-    <script>
-/**
- * LSH DOCUMENT CONTROL SYSTEM - V2026.FINAL
- * Replaces Quick Label Grid with Dynamic Manual Labeling & Metadata
- */
-
-function processFileUpload(input) {
-    const docBody = document.getElementById('doc-body');
-    const file = input.files[0];
-    if (!file) return;
-
-    const fileURL = URL.createObjectURL(file);
-    const today = new Date().toLocaleDateString();
-    
-    // Create the structured row
-    const tr = document.createElement('tr');
-    tr.className = "border-b border-slate-200 hover:bg-slate-50 transition-all";
-    
-    tr.innerHTML = `
-        <td width="180" class="align-top">
-            <label class="!bg-black !text-orange-500 !p-1 !mb-1 !text-[9px]">Document Label</label>
-            <div contenteditable="true" class="text-[11px] font-black uppercase text-black border-b border-orange-200 pb-1 mb-2">NEW DOCUMENT</div>
-            
-            <label class="!text-[8px] !text-slate-400 !mb-0">Service/Doc Date</label>
-            <div contenteditable="true" class="text-[10px] font-bold text-black">${today}</div>
-        </td>
-        <td class="align-top">
-            <label class="!text-[8px] !text-slate-400 !mb-1">Internal Notes & Description</label>
-            <div contenteditable="true" class="text-[10px] italic text-slate-600 min-h-[45px] leading-snug">Enter document summary or findings...</div>
-        </td>
-        <td width="150" class="align-top">
-            <label class="!text-[8px] !text-slate-400 !mb-1">Uploaded By</label>
-            <select class="prof-input !text-[10px] !p-1">
-                <option>Select Staff</option>
-                <option>Lead Attorney</option>
-                <option>Paralegal</option>
-                <option>Case Manager</option>
-                <option>Intake Specialist</option>
-            </select>
-            <div class="mt-2 flex gap-2">
-                <a href="${fileURL}" target="_blank" class="bg-blue-600 text-white text-[9px] font-black px-3 py-2 rounded no-print hover:bg-blue-700 flex-1 text-center uppercase">View File</a>
-                <button onclick="this.parentElement.parentElement.parentElement.remove()" class="bg-red-100 text-red-600 px-3 py-1 rounded font-bold hover:bg-red-600 hover:text-white transition-all">×</button>
-            </div>
-        </td>
-    `;
-
-    docBody.appendChild(tr);
-    input.value = ""; // Reset
-    
-    if (typeof applyLSHMasterStyles === "function") applyLSHMasterStyles();
-}
-
-function initDocumentInterface() {
-    const docPane = document.getElementById('pane-docs');
-    if (!docPane) return;
-
-    // 1. REMOVE the old Quick Label Portal grid if it exists
-    const oldPortal = document.querySelector('.grid-cols-4.lg\\:grid-cols-8');
-    if (oldPortal) oldPortal.remove();
-    const oldHeader = docPane.querySelector('h3.italic'); 
-    if (oldHeader && oldHeader.innerText.includes("QUICK LABEL")) oldHeader.remove();
-
-    // 2. INJECT the new professional Upload Hub
-    if (!document.getElementById('lsh-master-ingest')) {
-        const portalHtml = `
-            <div id="lsh-master-ingest" class="pdf-card !border-l-0 !border-t-4 !border-t-black bg-white shadow-md mb-8 no-print">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="bg-black p-4 rounded-full border-2 border-orange-500">
-                            <span class="text-2xl">📥</span>
-                        </div>
-                        <div>
-                            <h3 class="!bg-transparent !text-black !p-0 !m-0 !text-sm !font-black uppercase tracking-tighter">Document Ingest System</h3>
-                            <p class="text-[10px] text-slate-500 font-bold italic uppercase">Attach discovery, medical records, or police reports to case file</p>
-                        </div>
+            virtualPage.innerHTML = `
+                <div style="border-bottom: 5px solid #000; margin-bottom: 30px; padding-bottom: 10px;">
+                    <div style="font-size:9px;font-weight:900;letter-spacing:1px;color:#b91c1c;margin-bottom:6px;">CONFIDENTIAL — LSH INTERNAL RECORD</div>
+                    <h1 style="margin:0; font-size: 28px; text-transform: uppercase;">${clientName}</h1>
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 10px; font-weight: bold; text-transform: uppercase;">
+                        <span style="color: #f97316;">PHASE: ${phase}</span>
+                        <span style="color: #64748b;">DATE: ${new Date().toLocaleDateString()}</span>
                     </div>
-                    <label class="!bg-[#f97316] hover:!bg-black hover:!text-orange-500 !text-black !font-black !text-[11px] !px-10 !py-4 !rounded-none !border-2 !border-black !cursor-pointer transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                        UPLOAD & LABEL DOCUMENT
-                        <input type="file" class="hidden" onchange="processFileUpload(this)">
-                    </label>
-                </div>
-            </div>
-            <div class="flex items-center gap-2 mb-4">
-                <div class="h-[2px] bg-black flex-1"></div>
-                <span class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Document Repository</span>
-                <div class="h-[2px] bg-black flex-1"></div>
-            </div>
-        `;
-        docPane.insertAdjacentHTML('afterbegin', portalHtml);
-    }
-}
+                </div>`;
 
-// Ensure the old grid is purged and new system is active
-window.addEventListener('DOMContentLoaded', () => {
-    initDocumentInterface();
-});
-setInterval(initDocumentInterface, 1500);
-</script>
-</script>
+            const cards = document.querySelectorAll('.pdf-card');
+            cards.forEach(card => {
+                const header = card.querySelector('.section-head, h3');
+                if (!header) return;
+                let sectionContent = "";
+                const inputs = card.querySelectorAll('[contenteditable="true"], select');
+                inputs.forEach(input => {
+                    const val = input.tagName === 'SELECT' ? input.value : input.innerText.trim();
+                    if (val) {
+                        let labelText = "Detail";
+                        if (input.previousElementSibling && input.previousElementSibling.tagName === "LABEL") {
+                            labelText = input.previousElementSibling.innerText;
+                        } else if (input.closest('div') && input.closest('div').querySelector('label')) {
+                            labelText = input.closest('div').querySelector('label').innerText;
+                        }
+                        sectionContent += `<div style="margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px;">
+                            <div style="font-size: 8px; font-weight: 900; color: #94a3b8; text-transform: uppercase;">${labelText}</div>
+                            <div style="font-size: 11px; font-weight: bold; color: #000;">${val}</div>
+                        </div>`;
+                    }
+                });
+                if (sectionContent) {
+                    virtualPage.innerHTML += `<div style="margin-bottom: 30px; break-inside: avoid;">
+                        <h2 style="background-color: #000; color: #fff; font-size: 12px; padding: 6px 12px; text-transform: uppercase; margin-bottom: 15px;">${header.innerText}</h2>
+                        <div>${sectionContent}</div>
+                    </div>`;
+                }
+            });
+
+            const exportOptions = { margin: [0.5, 0.5], filename: `LSH_SUMMARY_${clientName.replace(/\s+/g, '_')}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
+            html2pdf().set(exportOptions).from(virtualPage).save().then(() => virtualPage.remove());
+        }
+
+        /* =========================================================
+           LIVE CLOCK + TIMEZONE
+           ========================================================= */
+        function refreshClock() {
+            const tz = document.getElementById('tz-select').value;
+            const now = new Date();
+            const formatted = new Intl.DateTimeFormat('en-US', {
+                year: 'numeric', month: 'short', day: '2-digit',
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                timeZone: tz, hour12: true
+            }).format(now);
+            document.getElementById('live-clock').innerText = formatted;
+        }
+        setInterval(refreshClock, 1000);
+
+        /* =========================================================
+           ADMIN — MASTER CONTROL
+           ========================================================= */
+        let isAdmin = false;
+        let adminSessionStart = null;
+
+        function openAdminModal() {
+            if (isAdmin) { openAdminPanel(); return; }
+            document.getElementById('admin-error').style.display = 'none';
+            document.getElementById('admin-user').value = '';
+            document.getElementById('admin-pass').value = '';
+            document.getElementById('admin-login-modal').classList.add('open');
+        }
+        function closeAdminModal() { document.getElementById('admin-login-modal').classList.remove('open'); }
+
+        function attemptAdminLogin() {
+            const u = document.getElementById('admin-user').value.trim();
+            const p = document.getElementById('admin-pass').value.trim();
+            if (u === ADMIN_USER && p === ADMIN_PASS) {
+                isAdmin = true;
+                adminSessionStart = new Date();
+                closeAdminModal();
+                const btn = document.getElementById('admin-login-btn');
+                btn.innerText = '👁 Admin Mode Active';
+                btn.classList.add('active-admin');
+                openAdminPanel();
+            } else {
+                document.getElementById('admin-error').style.display = 'block';
+            }
+        }
+
+        function openAdminPanel() {
+            document.getElementById('admin-stat-cases').innerText = (JSON.parse(localStorage.getItem(REPO_KEY) || '[]')).length;
+            document.getElementById('admin-stat-name').innerText = (document.getElementById('client-name-field').innerText.trim() || '—');
+            document.getElementById('admin-stat-phase').innerText = 'Phase: ' + document.getElementById('display-phase').innerText;
+            document.getElementById('admin-stat-med').innerText = document.getElementById('med-total').innerText;
+            document.getElementById('admin-stat-time').innerText = adminSessionStart ? adminSessionStart.toLocaleTimeString() : '—';
+            document.getElementById('admin-panel-modal').classList.add('open');
+        }
+        function closeAdminPanel() { document.getElementById('admin-panel-modal').classList.remove('open'); }
+
+        function adminLogout() {
+            isAdmin = false;
+            const btn = document.getElementById('admin-login-btn');
+            btn.innerText = '🔒 Admin Login';
+            btn.classList.remove('active-admin');
+            closeAdminPanel();
+        }
+
+        function changeLogo(input) {
+            const file = input.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                localStorage.setItem(LOGO_KEY, e.target.result);
+                applyLogo();
+            };
+            reader.readAsDataURL(file);
+        }
+        function resetLogo() { localStorage.removeItem(LOGO_KEY); applyLogo(); }
+        function applyLogo() {
+            const seal = document.getElementById('agency-seal');
+            const stored = localStorage.getItem(LOGO_KEY);
+            seal.innerHTML = stored ? `<img src="${stored}" alt="Agency Logo">` : '<span style="font-size:18px;">⚖</span>';
+        }
+
+        function setBackgroundImage(input) {
+            const file = input.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                localStorage.setItem(BG_KEY, e.target.result);
+                applyBackgroundImage();
+            };
+            reader.readAsDataURL(file);
+        }
+        function resetBackgroundImage() { localStorage.removeItem(BG_KEY); applyBackgroundImage(); }
+        function applyBackgroundImage() {
+            const stored = localStorage.getItem(BG_KEY);
+            if (stored) {
+                // Photo sits behind the interface color; the color layer is applied on top at 65% strength.
+                document.body.style.backgroundImage = `linear-gradient(rgba(15,33,72,0.65), rgba(15,33,72,0.65)), url('${stored}')`;
+            } else {
+                document.body.style.backgroundImage = 'none';
+            }
+        }
+
+        function lockPage() {
+            localStorage.setItem(LOCK_KEY, '1');
+            closeAdminPanel();
+            document.getElementById('lock-overlay').classList.add('open');
+        }
+        function attemptUnlock() {
+            const u = document.getElementById('unlock-user').value.trim();
+            const p = document.getElementById('unlock-pass').value.trim();
+            if (u === ADMIN_USER && p === ADMIN_PASS) {
+                localStorage.removeItem(LOCK_KEY);
+                document.getElementById('lock-overlay').classList.remove('open');
+                document.getElementById('unlock-error').style.display = 'none';
+                document.getElementById('unlock-user').value = '';
+                document.getElementById('unlock-pass').value = '';
+                isAdmin = true;
+                const btn = document.getElementById('admin-login-btn');
+                btn.innerText = '👁 Admin Mode Active';
+                btn.classList.add('active-admin');
+            } else {
+                document.getElementById('unlock-error').style.display = 'block';
+            }
+        }
+
+        /* ---------- Init ---------- */
+        window.addEventListener('DOMContentLoaded', () => {
+            renderRepo();
+            applyPlaceholders();
+            applyLogo();
+            applyBackgroundImage();
+            generateCaseId(true);
+            refreshClock();
+            if (localStorage.getItem(LOCK_KEY) === '1') document.getElementById('lock-overlay').classList.add('open');
+        });
+    </script>
 </body>
 </html>
